@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Volunteer Profile</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        background: #0f6f9c;
+        color: #ffffff;
+      }
+
+      .top-bar {
+        height: 110px;
+        padding: 0.7rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(7, 42, 71, 0.55);
+        box-shadow: 0 8px 24px rgba(0, 24, 44, 0.35);
+      }
+
+      .top-logo {
+        width: min(34vw, 240px);
+        height: auto;
+        transform: translateY(-20px);
+      }
+
+      .back-link {
+        border: 0;
+        border-radius: 10px;
+        padding: 0.6rem 0.85rem;
+        font-size: 0.95rem;
+        font-weight: 700;
+        text-decoration: none;
+        color: #06273f;
+        background: #dff8ff;
+      }
+
+      .page {
+        padding: 1rem;
+      }
+
+      .card {
+        width: min(820px, 100%);
+        border-radius: 18px;
+        padding: 1rem;
+        background: rgba(7, 42, 71, 0.35);
+        box-shadow:
+          0 18px 40px rgba(0, 24, 44, 0.35),
+          inset 0 0 0 1px rgba(223, 248, 255, 0.2);
+      }
+
+      h1 {
+        margin: 0 0 0.8rem;
+      }
+
+      .line {
+        margin: 0 0 0.6rem;
+        font-size: 1.05rem;
+      }
+
+      .line strong {
+        color: #dff8ff;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top-bar">
+      <img class="top-logo" src="snapkids_logo.png" alt="SNAPkids logo" />
+      <a class="back-link" href="success.html" id="back-link">Back</a>
+    </header>
+    <main class="page">
+      <section class="card">
+        <h1 id="volunteer-name">Volunteer Profile</h1>
+        <p class="line" id="volunteer-hours">Total volunteer hours: --</p>
+        <p class="line" id="volunteer-type"><strong>Status:</strong> --</p>
+        <p class="line" id="volunteer-experience"><strong>Experience:</strong> --</p>
+        <p class="line" id="volunteer-strikes"><strong>Strikes:</strong> --</p>
+      </section>
+    </main>
+    <script>
+      const backLink = document.getElementById("back-link");
+      const params = new URLSearchParams(window.location.search);
+      const name = params.get("name") || "Unknown Volunteer";
+      const hours = params.get("hours") || "--";
+      const sourceTab = params.get("sourceTab");
+      const returnYear = Number(params.get("year"));
+      const returnMonth = Number(params.get("month"));
+      document.getElementById("volunteer-name").textContent = name;
+      document.getElementById("volunteer-hours").textContent = "Total volunteer hours: " + hours;
+      const volunteerTypeEl = document.getElementById("volunteer-type");
+      const volunteerExperienceEl = document.getElementById("volunteer-experience");
+      const volunteerStrikesEl = document.getElementById("volunteer-strikes");
+
+      function hashName(value) {
+        let hash = 0;
+        for (let i = 0; i < value.length; i += 1) {
+          hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
+        }
+        return hash;
+      }
+
+      function buildVolunteerStats(volunteerName) {
+        const hash = hashName(volunteerName);
+        const status = hash % 4 === 0 ? "New Volunteer" : "Returning Volunteer";
+        const years = status === "New Volunteer" ? 0 : 1 + (Math.floor(hash / 5) % 6);
+        const classesHelped = status === "New Volunteer" ? 0 : 6 + (Math.floor(hash / 7) % 90);
+        const certifications = [
+          "Water Safety Basics",
+          "First Aid/CPR",
+          "Beginner Swim Instruction",
+          "Adaptive Support Training",
+        ];
+        const certA = certifications[hash % certifications.length];
+        const certB = certifications[Math.floor(hash / 3) % certifications.length];
+        const strikes = Math.floor(hash / 11) % 4;
+
+        let experienceText = "First season with SNAPkids; onboarding in progress.";
+        if (status !== "New Volunteer") {
+          experienceText =
+            years +
+            " year(s) volunteering, helped in " +
+            classesHelped +
+            " class(es), certified in " +
+            certA +
+            (certB !== certA ? " and " + certB : "") +
+            ".";
+        }
+
+        return {
+          status: status,
+          experienceText: experienceText,
+          strikes: strikes,
+        };
+      }
+
+      const volunteerStats = buildVolunteerStats(name);
+      volunteerTypeEl.innerHTML = "<strong>Status:</strong> " + volunteerStats.status;
+      volunteerExperienceEl.innerHTML = "<strong>Experience:</strong> " + volunteerStats.experienceText;
+      volunteerStrikesEl.innerHTML = "<strong>Strikes:</strong> " + volunteerStats.strikes;
+
+      let fallbackHref = "success.html";
+      if (sourceTab === "volunteers" || sourceTab === "students" || sourceTab === "forms") {
+        fallbackHref = "success.html?tab=" + encodeURIComponent(sourceTab);
+        if (
+          Number.isInteger(returnYear) &&
+          Number.isInteger(returnMonth) &&
+          returnMonth >= 0 &&
+          returnMonth <= 11
+        ) {
+          fallbackHref +=
+            "&year=" +
+            encodeURIComponent(returnYear) +
+            "&month=" +
+            encodeURIComponent(returnMonth);
+        }
+      }
+      backLink.href = fallbackHref;
+
+      backLink.addEventListener("click", function (event) {
+        event.preventDefault();
+        if (sourceTab === "volunteers" || sourceTab === "students" || sourceTab === "forms") {
+          window.location.href = fallbackHref;
+          return;
+        }
+        if (window.history.length > 1) {
+          window.history.back();
+        } else {
+          window.location.href = fallbackHref;
+        }
+      });
+    </script>
+  </body>
+</html>

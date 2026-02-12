@@ -53,9 +53,9 @@
         position: absolute;
         top: calc(100% - 8px);
         right: 1rem;
-        min-width: 140px;
+        min-width: 160px;
         border-radius: 12px;
-        padding: 0.5rem;
+        padding: 0.55rem;
         background: rgba(7, 42, 71, 0.97);
         box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
         display: none;
@@ -71,13 +71,17 @@
         width: 100%;
         border: 0;
         border-radius: 8px;
-        padding: 0.55rem 0.65rem;
+        padding: 0.45rem 0.6rem;
         text-decoration: none;
-        font-size: 0.95rem;
+        font-size: 0.86rem;
         font-weight: 700;
         color: #06273f;
         background: #dff8ff;
         text-align: center;
+      }
+
+      .logout-link + .logout-link {
+        margin-top: 0.45rem;
       }
 
       .profile-btn svg {
@@ -91,12 +95,13 @@
         height: auto;
         padding: 1rem;
         display: flex;
+        align-items: flex-start;
         gap: 1rem;
       }
 
       .sidebar {
         width: min(28vw, 320px);
-        min-height: calc(100vh - 142px);
+        height: calc(100vh - 142px);
         border-radius: 18px;
         padding: 1rem;
         display: flex;
@@ -109,9 +114,10 @@
       }
 
       .sidebar-btn {
-        flex: 1;
+        flex: 0 0 calc((100% - 2.1rem) / 4);
         width: 100%;
         border: 0;
+        position: relative;
         border-radius: 12px;
         padding: 0.72rem 0.8rem;
         display: flex;
@@ -130,6 +136,7 @@
       .sidebar-btn.active {
         background: rgba(7, 42, 71, 0.92);
         color: #ffffff;
+        box-shadow: inset 0 0 0 1px rgba(223, 248, 255, 0.2);
         transform: translateX(10px);
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
@@ -138,12 +145,12 @@
       .content-pane {
         flex: 1;
         display: flex;
-        justify-content: flex-end;
+        justify-content: stretch;
       }
 
       .calendar-shell {
         min-height: calc(100vh - 142px);
-        width: min(950px, 100%);
+        width: 100%;
         height: auto;
         border-radius: 18px;
         padding: 1rem;
@@ -166,6 +173,73 @@
         height: 100%;
         border-radius: 14px;
         background: rgba(223, 248, 255, 0.08);
+        padding: 1rem;
+      }
+
+      .blank-panel.empty {
+        background: rgba(223, 248, 255, 0.08);
+      }
+
+      .inbox {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .inbox-title {
+        margin: 0;
+        font-size: 1.25rem;
+      }
+
+      .inbox-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 0.6rem;
+        overflow-y: auto;
+      }
+
+      .inbox-item {
+        border-radius: 12px;
+        background: rgba(223, 248, 255, 0.14);
+        padding: 0.7rem;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.6rem;
+        align-items: center;
+      }
+
+      .request-name {
+        font-size: 1rem;
+        font-weight: 700;
+      }
+
+      .request-hours {
+        font-size: 0.9rem;
+        opacity: 0.95;
+      }
+
+      .request-actions {
+        display: flex;
+        gap: 0.45rem;
+      }
+
+      .request-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        border-radius: 8px;
+        padding: 0.5rem 0.7rem;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-decoration: none;
+        color: #06273f;
+        background: #dff8ff;
+        cursor: pointer;
+        white-space: nowrap;
       }
 
       .calendar-shell.blank-mode .blank-panel {
@@ -173,8 +247,7 @@
       }
 
       .calendar-shell.blank-mode .calendar-controls,
-      .calendar-shell.blank-mode .calendar-weekdays,
-      .calendar-shell.blank-mode .calendar-days {
+      .calendar-shell.blank-mode .calendar-main {
         display: none;
       }
 
@@ -184,6 +257,52 @@
         justify-content: space-between;
         gap: 0.8rem;
         margin-bottom: 1rem;
+      }
+
+      .calendar-main {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 1.55fr 0.75fr;
+        gap: 0.9rem;
+      }
+
+      .calendar-left {
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .tasks-box {
+        min-height: 0;
+        border-radius: 12px;
+        padding: 0.85rem;
+        background: rgba(223, 248, 255, 0.14);
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+      }
+
+      .tasks-title {
+        margin: 0;
+        font-size: 1.05rem;
+      }
+
+      .tasks-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 0.45rem;
+        overflow-y: auto;
+      }
+
+      .tasks-list li {
+        border-radius: 8px;
+        padding: 0.48rem 0.55rem;
+        background: rgba(7, 42, 71, 0.45);
+        font-size: 0.9rem;
+        cursor: pointer;
       }
 
       .month-nav {
@@ -275,6 +394,15 @@
         gap: 0.5rem;
         background: rgba(223, 248, 255, 0.14);
         font-weight: 700;
+        overflow: hidden;
+      }
+
+      .day-cell.clickable {
+        cursor: pointer;
+      }
+
+      .day-number {
+        line-height: 1;
       }
 
       .class-tag {
@@ -288,10 +416,201 @@
         color: #06273f;
         background: #dff8ff;
         cursor: pointer;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: clip;
+      }
+
+      .user-event-tag {
+        border: 0;
+        width: 100%;
+        border-radius: 7px;
+        padding: 0.22rem 0.35rem;
+        font-size: 0.74rem;
+        font-weight: 700;
+        line-height: 1.1;
+        color: #ffffff;
+        background: rgba(7, 42, 71, 0.78);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: clip;
+        text-align: left;
+        cursor: pointer;
       }
 
       .day-cell.empty {
         background: rgba(223, 248, 255, 0.05);
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        z-index: 20;
+      }
+
+      .modal-backdrop.open {
+        display: flex;
+      }
+
+      .event-modal {
+        width: min(560px, 100%);
+        border-radius: 14px;
+        padding: 1rem;
+        background: rgba(7, 42, 71, 0.98);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+      }
+
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.9rem;
+      }
+
+      .modal-header-actions {
+        display: flex;
+        gap: 0.45rem;
+      }
+
+      .modal-title {
+        margin: 0;
+        font-size: 1.15rem;
+      }
+
+      .close-modal {
+        border: 0;
+        border-radius: 8px;
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #06273f;
+        background: #dff8ff;
+        cursor: pointer;
+      }
+
+      .delete-event-btn {
+        border: 0;
+        border-radius: 8px;
+        padding: 0.45rem 0.6rem;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #ffffff;
+        background: #c93f3f;
+        cursor: pointer;
+      }
+
+      .confirm-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        z-index: 30;
+      }
+
+      .confirm-backdrop.open {
+        display: flex;
+      }
+
+      .confirm-modal {
+        width: min(420px, 100%);
+        border-radius: 14px;
+        padding: 1rem;
+        background: rgba(7, 42, 71, 0.98);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+      }
+
+      .confirm-title {
+        margin: 0 0 0.5rem;
+        font-size: 1.05rem;
+      }
+
+      .confirm-text {
+        margin: 0 0 0.9rem;
+        font-size: 0.92rem;
+        opacity: 0.95;
+      }
+
+      .confirm-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.55rem;
+      }
+
+      .confirm-cancel,
+      .confirm-delete {
+        border: 0;
+        border-radius: 8px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.88rem;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .confirm-cancel {
+        color: #06273f;
+        background: #dff8ff;
+      }
+
+      .confirm-delete {
+        color: #ffffff;
+        background: #c93f3f;
+      }
+
+      .event-form {
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      .event-form label {
+        font-size: 0.92rem;
+        font-weight: 700;
+      }
+
+      .event-form input,
+      .event-form textarea,
+      .event-form select {
+        width: 100%;
+        border: 0;
+        border-radius: 8px;
+        padding: 0.55rem 0.6rem;
+        font-size: 0.92rem;
+      }
+
+      .time-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.6rem;
+      }
+
+      .time-group {
+        display: grid;
+        gap: 0.35rem;
+      }
+
+      .time-selects {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 0.4rem;
+      }
+
+      .add-event-btn {
+        border: 0;
+        border-radius: 10px;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #06273f;
+        background: #dff8ff;
+        cursor: pointer;
       }
 
       @media (max-width: 760px) {
@@ -314,15 +633,14 @@
 
         .sidebar {
           width: 100%;
-          min-height: 0;
+          height: auto;
           flex-direction: row;
           flex-wrap: wrap;
         }
 
         .sidebar-btn {
-          flex: 1 1 45%;
+          flex: 1 1 calc(50% - 0.7rem);
           text-align: center;
-          transform: none;
           border-radius: 12px;
         }
 
@@ -340,6 +658,10 @@
           align-items: flex-start;
         }
 
+        .calendar-main {
+          grid-template-columns: 1fr;
+        }
+
         .month-nav {
           width: 100%;
         }
@@ -351,6 +673,10 @@
 
         .calendar-days {
           grid-auto-rows: minmax(64px, auto);
+        }
+
+        .time-row {
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -365,6 +691,7 @@
         </svg>
       </button>
       <div class="profile-menu" id="profile-menu">
+        <a class="logout-link" href="profile-page.html">View Profile</a>
         <a class="logout-link" href="index.html">Log out</a>
       </div>
     </header>
@@ -389,20 +716,105 @@
             </div>
           </div>
 
-          <div class="calendar-weekdays">
-            <div class="weekday">Sun</div>
-            <div class="weekday">Mon</div>
-            <div class="weekday">Tue</div>
-            <div class="weekday">Wed</div>
-            <div class="weekday">Thu</div>
-            <div class="weekday">Fri</div>
-            <div class="weekday">Sat</div>
+          <div class="calendar-main">
+            <div class="calendar-left">
+              <div class="calendar-weekdays">
+                <div class="weekday">Sun</div>
+                <div class="weekday">Mon</div>
+                <div class="weekday">Tue</div>
+                <div class="weekday">Wed</div>
+                <div class="weekday">Thu</div>
+                <div class="weekday">Fri</div>
+                <div class="weekday">Sat</div>
+              </div>
+              <div class="calendar-days" id="calendar-days"></div>
+            </div>
+            <aside class="tasks-box">
+              <h2 class="tasks-title">Upcoming Tasks</h2>
+              <ul class="tasks-list" id="upcoming-tasks-list"></ul>
+            </aside>
           </div>
-          <div class="calendar-days" id="calendar-days"></div>
-          <div class="blank-panel" id="blank-panel"></div>
+          <div class="blank-panel empty" id="blank-panel"></div>
         </section>
       </div>
     </main>
+    <div class="modal-backdrop" id="event-modal-backdrop">
+      <div class="event-modal" role="dialog" aria-modal="true" aria-labelledby="event-modal-title">
+        <div class="modal-header">
+          <h2 class="modal-title" id="event-modal-title">Add Event</h2>
+          <button class="close-modal" id="close-event-modal" type="button" aria-label="Close">X</button>
+        </div>
+        <form class="event-form" id="event-form">
+          <label for="event-name">Event Name</label>
+          <input id="event-name" type="text" required />
+
+          <div class="time-row">
+            <div class="time-group">
+              <label>Start Time</label>
+              <div class="time-selects">
+                <select id="start-hour"></select>
+                <select id="start-minute"></select>
+                <select id="start-meridiem">
+                  <option>AM</option>
+                  <option>PM</option>
+                </select>
+              </div>
+            </div>
+            <div class="time-group">
+              <label>End Time</label>
+              <div class="time-selects">
+                <select id="end-hour"></select>
+                <select id="end-minute"></select>
+                <select id="end-meridiem">
+                  <option>AM</option>
+                  <option>PM</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <label for="event-description">General Description</label>
+          <textarea id="event-description" rows="4"></textarea>
+
+          <button class="add-event-btn" type="submit">Add event</button>
+        </form>
+      </div>
+    </div>
+    <div class="modal-backdrop" id="event-info-backdrop">
+      <div class="event-modal" role="dialog" aria-modal="true" aria-labelledby="event-info-title">
+        <div class="modal-header">
+          <h2 class="modal-title" id="event-info-title">Event Info</h2>
+          <div class="modal-header-actions">
+            <button class="delete-event-btn" id="delete-event-btn" type="button" style="display: none">
+              Delete event
+            </button>
+            <button class="close-modal" id="close-event-info" type="button" aria-label="Close">X</button>
+          </div>
+        </div>
+        <div class="event-form">
+          <label>Event Name</label>
+          <input id="info-name" type="text" readonly />
+          <label>Date</label>
+          <input id="info-date" type="text" readonly />
+          <label>Start Time</label>
+          <input id="info-start" type="text" readonly />
+          <label>End Time</label>
+          <input id="info-end" type="text" readonly />
+          <label>Description</label>
+          <textarea id="info-description" rows="4" readonly></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="confirm-backdrop" id="delete-confirm-backdrop">
+      <div class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="delete-confirm-title">
+        <h3 class="confirm-title" id="delete-confirm-title">Delete event?</h3>
+        <p class="confirm-text">This will remove the event from both the calendar and upcoming tasks.</p>
+        <div class="confirm-actions">
+          <button class="confirm-cancel" id="cancel-delete-event" type="button">Cancel</button>
+          <button class="confirm-delete" id="confirm-delete-event" type="button">Delete event</button>
+        </div>
+      </div>
+    </div>
 
     <script>
       const now = new Date();
@@ -410,24 +822,237 @@
       let currentMonth = now.getMonth();
       const monthTitle = document.getElementById("month-title");
       const calendarDays = document.getElementById("calendar-days");
+      const upcomingTasksList = document.getElementById("upcoming-tasks-list");
+      const eventModalBackdrop = document.getElementById("event-modal-backdrop");
+      const eventInfoBackdrop = document.getElementById("event-info-backdrop");
+      const deleteConfirmBackdrop = document.getElementById("delete-confirm-backdrop");
+      const closeEventModalButton = document.getElementById("close-event-modal");
+      const closeEventInfoButton = document.getElementById("close-event-info");
+      const deleteEventButton = document.getElementById("delete-event-btn");
+      const cancelDeleteEventButton = document.getElementById("cancel-delete-event");
+      const confirmDeleteEventButton = document.getElementById("confirm-delete-event");
+      const eventForm = document.getElementById("event-form");
+      const eventNameInput = document.getElementById("event-name");
+      const eventModalTitle = document.getElementById("event-modal-title");
+      const startHourSelect = document.getElementById("start-hour");
+      const startMinuteSelect = document.getElementById("start-minute");
+      const startMeridiemSelect = document.getElementById("start-meridiem");
+      const endHourSelect = document.getElementById("end-hour");
+      const endMinuteSelect = document.getElementById("end-minute");
+      const endMeridiemSelect = document.getElementById("end-meridiem");
+      const eventDescriptionInput = document.getElementById("event-description");
+      const infoNameInput = document.getElementById("info-name");
+      const infoDateInput = document.getElementById("info-date");
+      const infoStartInput = document.getElementById("info-start");
+      const infoEndInput = document.getElementById("info-end");
+      const infoDescriptionInput = document.getElementById("info-description");
       const prevMonthButton = document.getElementById("prev-month");
       const nextMonthButton = document.getElementById("next-month");
       const todayButton = document.getElementById("today-btn");
       const termSelect = document.getElementById("term-select");
       const mainPanel = document.getElementById("main-panel");
+      const blankPanel = document.getElementById("blank-panel");
       const profileButton = document.getElementById("profile-btn");
       const profileMenu = document.getElementById("profile-menu");
       const sidebarButtons = Array.from(document.querySelectorAll(".sidebar-btn"));
+      const params = new URLSearchParams(window.location.search);
+      const initialView = params.get("tab");
+      const requestedYear = Number(params.get("year"));
+      const requestedMonth = Number(params.get("month"));
       let minAllowedYear = now.getFullYear();
       let minAllowedMonth = now.getMonth();
       let maxAllowedYear = now.getFullYear();
       let maxAllowedMonth = now.getMonth();
+      let selectedEventDate = null;
+      let currentInfoEventRef = null;
+      const userEventsStorageKey = "snapkids_user_events_v1";
+      const userEventsByDate = new Map();
+      const volunteerFormRequests = [
+        { name: "Avery Johnson", hours: 18.25 },
+        { name: "Maya Patel", hours: 26.5 },
+        { name: "Liam Chen", hours: 14.75 },
+        { name: "Noah Garcia", hours: 32.0 },
+        { name: "Emma Nguyen", hours: 21.25 },
+        { name: "Sofia Kim", hours: 17.5 },
+        { name: "Ethan Lee", hours: 29.75 },
+        { name: "Olivia Martinez", hours: 12.0 },
+      ];
+      const volunteersDirectory = [
+        { name: "Avery Johnson", hours: 18.25 },
+        { name: "Ethan Lee", hours: 29.75 },
+        { name: "Emma Nguyen", hours: 21.25 },
+        { name: "Liam Chen", hours: 14.75 },
+        { name: "Maya Patel", hours: 26.5 },
+        { name: "Noah Garcia", hours: 32.0 },
+        { name: "Olivia Martinez", hours: 12.0 },
+        { name: "Sofia Kim", hours: 17.5 },
+      ];
+      const studentsDirectory = [
+        "Amelia Brooks",
+        "Benjamin Torres",
+        "Charlotte Evans",
+        "Daniel Rivera",
+        "Evelyn Foster",
+        "Gabriel Reed",
+        "Harper Collins",
+        "Isaac Howard",
+        "Layla Bennett",
+        "Mason Price",
+        "Nora Hayes",
+        "Owen Turner",
+      ];
+      const volunteerFormPdf =
+        "data:application/pdf;base64,JVBERi0xLjEKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5kb2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCA2MTIgNzkyXSA+PgplbmRvYmoKeHJlZgowIDQKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDEwIDAwMDAwIG4gCjAwMDAwMDAwNjAgMDAwMDAgbiAKMDAwMDAwMDExNyAwMDAwMCBuIAp0cmFpbGVyCjw8IC9Sb290IDEgMCBSIC9TaXplIDQgPj4Kc3RhcnR4cmVmCjE4MgolJUVPRg==";
+
+      function formatQuarterHours(hours) {
+        const whole = Math.floor(hours);
+        const fraction = Math.round((hours - whole) * 100) / 100;
+        if (fraction === 0) {
+          return whole + ".0";
+        }
+        if (fraction === 0.25) {
+          return whole + ".25";
+        }
+        if (fraction === 0.5) {
+          return whole + ".5";
+        }
+        if (fraction === 0.75) {
+          return whole + ".75";
+        }
+        return String(hours);
+      }
+
+      function slugifyName(name) {
+        return name.toLowerCase().replace(/\s+/g, "-");
+      }
+
+      function renderBlankPanel(viewName) {
+        if (viewName === "forms") {
+          blankPanel.className = "blank-panel";
+          const listHtml = volunteerFormRequests
+            .map(function (request) {
+              const slug = slugifyName(request.name);
+              const profileHref =
+                "volunteer-profile.html?name=" +
+                encodeURIComponent(request.name) +
+                "&hours=" +
+                encodeURIComponent(formatQuarterHours(request.hours)) +
+                "&sourceTab=forms" +
+                "&year=" +
+                encodeURIComponent(currentYear) +
+                "&month=" +
+                encodeURIComponent(currentMonth);
+              return (
+                '<li class="inbox-item">' +
+                  '<div>' +
+                    '<div class="request-name">' + request.name + "</div>" +
+                    '<div class="request-hours">Total volunteer hours: ' + formatQuarterHours(request.hours) + "</div>" +
+                  "</div>" +
+                  '<div class="request-actions">' +
+                    '<a class="request-btn" href="' + profileHref + '">View Profile</a>' +
+                    '<a class="request-btn" href="' +
+                    volunteerFormPdf +
+                    '" download="' +
+                    slug +
+                    '-volunteer-form.pdf">Sign Form</a>' +
+                  "</div>" +
+                "</li>"
+              );
+            })
+            .join("");
+
+          blankPanel.innerHTML =
+            '<div class="inbox">' +
+              '<h2 class="inbox-title">Volunteer Form Requests</h2>' +
+              '<ul class="inbox-list">' + listHtml + "</ul>" +
+            "</div>";
+          return;
+        }
+
+        if (viewName === "volunteers") {
+          blankPanel.className = "blank-panel";
+          const sortedVolunteers = volunteersDirectory
+            .slice()
+            .sort(function (a, b) {
+              return a.name.localeCompare(b.name);
+            });
+          const listHtml = sortedVolunteers
+            .map(function (volunteer) {
+              const profileHref =
+                "volunteer-profile.html?name=" +
+                encodeURIComponent(volunteer.name) +
+                "&hours=" +
+                encodeURIComponent(formatQuarterHours(volunteer.hours)) +
+                "&sourceTab=volunteers" +
+                "&year=" +
+                encodeURIComponent(currentYear) +
+                "&month=" +
+                encodeURIComponent(currentMonth);
+              return (
+                '<li class="inbox-item">' +
+                  '<div class="request-name">' + volunteer.name + "</div>" +
+                  '<div class="request-actions">' +
+                    '<a class="request-btn" href="' + profileHref + '">View Profile</a>' +
+                  "</div>" +
+                "</li>"
+              );
+            })
+            .join("");
+
+          blankPanel.innerHTML =
+            '<div class="inbox">' +
+              '<h2 class="inbox-title">Volunteers</h2>' +
+              '<ul class="inbox-list">' + listHtml + "</ul>" +
+            "</div>";
+          return;
+        }
+
+        if (viewName === "students") {
+          blankPanel.className = "blank-panel";
+          const sortedStudents = studentsDirectory
+            .slice()
+            .sort(function (a, b) {
+              return a.localeCompare(b);
+            });
+          const listHtml = sortedStudents
+            .map(function (studentName) {
+              const profileHref =
+                "student-profile.html?name=" +
+                encodeURIComponent(studentName) +
+                "&sourceTab=students" +
+                "&year=" +
+                encodeURIComponent(currentYear) +
+                "&month=" +
+                encodeURIComponent(currentMonth);
+              return (
+                '<li class="inbox-item">' +
+                  '<div class="request-name">' + studentName + "</div>" +
+                  '<div class="request-actions">' +
+                    '<a class="request-btn" href="' + profileHref + '">View Profile</a>' +
+                  "</div>" +
+                "</li>"
+              );
+            })
+            .join("");
+
+          blankPanel.innerHTML =
+            '<div class="inbox">' +
+              '<h2 class="inbox-title">Students</h2>' +
+              '<ul class="inbox-list">' + listHtml + "</ul>" +
+            "</div>";
+          return;
+        }
+
+        blankPanel.className = "blank-panel empty";
+        blankPanel.innerHTML = "";
+      }
 
       function setActiveView(viewName) {
         sidebarButtons.forEach(function (button) {
           button.classList.toggle("active", button.dataset.view === viewName);
         });
         mainPanel.classList.toggle("blank-mode", viewName !== "calendar");
+        renderBlankPanel(viewName);
       }
 
       function getSeasonForMonth(monthIndex) {
@@ -465,6 +1090,85 @@
         const month = String(date.getMonth() + 1).padStart(2, "0");
         const day = String(date.getDate()).padStart(2, "0");
         return year + "-" + month + "-" + day;
+      }
+
+      function formatReadableDate(date) {
+        return date.toLocaleDateString(undefined, {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        });
+      }
+
+      function formatDisplayTime(hourValue, minuteValue, meridiemValue) {
+        return hourValue + ":" + minuteValue + " " + meridiemValue;
+      }
+
+      function loadUserEvents() {
+        try {
+          const raw = localStorage.getItem(userEventsStorageKey);
+          if (!raw) {
+            return;
+          }
+          const parsed = JSON.parse(raw);
+          Object.keys(parsed).forEach(function (dateKey) {
+            const events = Array.isArray(parsed[dateKey]) ? parsed[dateKey] : [];
+            const normalized = events.map(function (eventItem) {
+              return {
+                id: eventItem.id || String(Date.now()) + Math.random().toString(16).slice(2),
+                name: eventItem.name || "Event",
+                description: eventItem.description || "",
+                startText: eventItem.startText || "",
+                endText: eventItem.endText || "",
+                startMinutes: typeof eventItem.startMinutes === "number" ? eventItem.startMinutes : 0,
+              };
+            });
+            userEventsByDate.set(dateKey, normalized);
+          });
+        } catch (error) {
+          // Ignore malformed saved data.
+        }
+      }
+
+      function saveUserEvents() {
+        const payload = {};
+        userEventsByDate.forEach(function (events, dateKey) {
+          payload[dateKey] = events;
+        });
+        localStorage.setItem(userEventsStorageKey, JSON.stringify(payload));
+      }
+
+      function to12HourMinutes(hourValue, minuteValue, meridiemValue) {
+        let hour = Number(hourValue);
+        const minute = Number(minuteValue);
+        if (meridiemValue === "AM") {
+          if (hour === 12) {
+            hour = 0;
+          }
+        } else if (hour !== 12) {
+          hour += 12;
+        }
+        return hour * 60 + minute;
+      }
+
+      function syncEndTimeIfNeeded() {
+        const startTotal = to12HourMinutes(
+          startHourSelect.value,
+          startMinuteSelect.value,
+          startMeridiemSelect.value
+        );
+        const endTotal = to12HourMinutes(
+          endHourSelect.value,
+          endMinuteSelect.value,
+          endMeridiemSelect.value
+        );
+
+        if (startTotal > endTotal) {
+          endHourSelect.value = startHourSelect.value;
+          endMinuteSelect.value = startMinuteSelect.value;
+          endMeridiemSelect.value = startMeridiemSelect.value;
+        }
       }
 
       function shiftSeason(season, year, offset) {
@@ -545,6 +1249,17 @@
         }
       }
 
+      function buildClassDetailsUrl(dateValue) {
+        return (
+          "class-details.html?date=" +
+          encodeURIComponent(dateValue) +
+          "&returnYear=" +
+          encodeURIComponent(currentYear) +
+          "&returnMonth=" +
+          encodeURIComponent(currentMonth)
+        );
+      }
+
       function renderCalendar(year, month) {
         calendarDays.innerHTML = "";
         const displayDate = new Date(year, month, 1);
@@ -565,26 +1280,213 @@
 
         for (let day = 1; day <= daysInMonth; day += 1) {
           const date = new Date(year, month, day);
+          const dateValue = formatLocalDate(date);
           const dayCell = document.createElement("div");
-          dayCell.className = "day-cell";
-          dayCell.textContent = String(day);
+          dayCell.className = "day-cell clickable";
+          const dayNumber = document.createElement("div");
+          dayNumber.className = "day-number";
+          dayNumber.textContent = String(day);
+          dayCell.appendChild(dayNumber);
+
+          dayCell.addEventListener("click", function () {
+            openEventModal(date);
+          });
 
           if (date.getDay() === 6) {
             const classTag = document.createElement("button");
             classTag.type = "button";
             classTag.className = "class-tag";
             classTag.textContent = "Class";
-            const dateValue = formatLocalDate(date);
-            classTag.addEventListener("click", function () {
-              window.location.href = "class-details.html?date=" + dateValue;
+            classTag.addEventListener("click", function (event) {
+              event.stopPropagation();
+              window.location.href = buildClassDetailsUrl(dateValue);
             });
             dayCell.appendChild(classTag);
           }
 
+          const addedEvents = userEventsByDate.get(dateValue) || [];
+          addedEvents.forEach(function (eventItem) {
+            const eventTag = document.createElement("button");
+            eventTag.type = "button";
+            eventTag.className = "user-event-tag";
+            eventTag.textContent = eventItem.name;
+            eventTag.addEventListener("click", function (event) {
+              event.stopPropagation();
+              openEventInfoModal({
+                name: eventItem.name,
+                readableDate: formatReadableDate(date),
+                startText: eventItem.startText || "",
+                endText: eventItem.endText || "",
+                description: eventItem.description || "",
+                deletable: true,
+                dateKey: dateValue,
+                eventId: eventItem.id,
+              });
+            });
+            dayCell.appendChild(eventTag);
+          });
+
           calendarDays.appendChild(dayCell);
         }
 
+        renderUpcomingTasks();
         syncSeasonFromMonth();
+      }
+
+      function closeEventModal() {
+        eventModalBackdrop.classList.remove("open");
+      }
+
+      function closeEventInfoModal() {
+        eventInfoBackdrop.classList.remove("open");
+        currentInfoEventRef = null;
+      }
+
+      function closeDeleteConfirmModal() {
+        deleteConfirmBackdrop.classList.remove("open");
+      }
+
+      function openEventInfoModal(eventData) {
+        infoNameInput.value = eventData.name || "Event";
+        infoDateInput.value = eventData.readableDate || "";
+        infoStartInput.value = eventData.startText || "";
+        infoEndInput.value = eventData.endText || "";
+        infoDescriptionInput.value = eventData.description || "No description provided";
+        currentInfoEventRef = eventData.deletable
+          ? { dateKey: eventData.dateKey, eventId: eventData.eventId }
+          : null;
+        deleteEventButton.style.display = eventData.deletable ? "inline-flex" : "none";
+        eventInfoBackdrop.classList.add("open");
+      }
+
+      function openEventModal(date) {
+        selectedEventDate = formatLocalDate(date);
+        eventModalTitle.textContent =
+          "Add Event - " +
+          date.toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" });
+        eventNameInput.value = "";
+        eventDescriptionInput.value = "";
+        eventModalBackdrop.classList.add("open");
+      }
+
+      function populateTimeSelects() {
+        startHourSelect.innerHTML = "";
+        endHourSelect.innerHTML = "";
+        for (let hour = 1; hour <= 12; hour += 1) {
+          const optionA = document.createElement("option");
+          optionA.value = String(hour);
+          optionA.textContent = String(hour);
+          startHourSelect.appendChild(optionA);
+
+          const optionB = document.createElement("option");
+          optionB.value = String(hour);
+          optionB.textContent = String(hour);
+          endHourSelect.appendChild(optionB);
+        }
+
+        startMinuteSelect.innerHTML = "";
+        endMinuteSelect.innerHTML = "";
+        const minuteOptions = ["00", "15", "30", "45"];
+        minuteOptions.forEach(function (minute) {
+          const optionA = document.createElement("option");
+          optionA.value = minute;
+          optionA.textContent = minute;
+          startMinuteSelect.appendChild(optionA);
+
+          const optionB = document.createElement("option");
+          optionB.value = minute;
+          optionB.textContent = minute;
+          endMinuteSelect.appendChild(optionB);
+        });
+
+        startHourSelect.value = "9";
+        startMinuteSelect.value = "00";
+        startMeridiemSelect.value = "AM";
+        endHourSelect.value = "10";
+        endMinuteSelect.value = "00";
+        endMeridiemSelect.value = "AM";
+      }
+
+      function renderUpcomingTasks() {
+        upcomingTasksList.innerHTML = "";
+        const events = [];
+        const startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const cursor = new Date(startDate);
+        const limitDate = new Date(maxAllowedYear, maxAllowedMonth + 1, 0);
+
+        while (events.length < 40 && cursor <= limitDate) {
+          const dateKey = formatLocalDate(cursor);
+          if (cursor.getDay() === 6) {
+            const classDateValue = formatLocalDate(cursor);
+            events.push({
+              date: new Date(cursor),
+              dateValue: classDateValue,
+              label: "Class",
+              startMinutes: 0,
+              startText: "9:00 AM",
+              endText: "10:00 AM",
+              description: "Weekly class session.",
+              deletable: false,
+            });
+          }
+
+          const extraEvents = userEventsByDate.get(dateKey) || [];
+          extraEvents.forEach(function (eventItem) {
+            events.push({
+              date: new Date(cursor),
+              dateValue: dateKey,
+              label: eventItem.name,
+              startMinutes: eventItem.startMinutes,
+              startText: eventItem.startText || "",
+              endText: eventItem.endText || "",
+              description: eventItem.description || "",
+              eventId: eventItem.id,
+              deletable: true,
+            });
+          });
+
+          events.sort(function (a, b) {
+            const dateDiff = a.date.getTime() - b.date.getTime();
+            if (dateDiff !== 0) {
+              return dateDiff;
+            }
+            return a.startMinutes - b.startMinutes;
+          });
+
+          if (events.length > 5) {
+            events.length = 5;
+          }
+          cursor.setDate(cursor.getDate() + 1);
+        }
+
+        events.forEach(function (eventItem) {
+          const item = document.createElement("li");
+          item.textContent =
+            eventItem.label +
+            " - " +
+            eventItem.date.toLocaleDateString(undefined, {
+              weekday: "short",
+              month: "short",
+              day: "numeric",
+            });
+          item.addEventListener("click", function () {
+            if (eventItem.label === "Class" && eventItem.dateValue) {
+              window.location.href = buildClassDetailsUrl(eventItem.dateValue);
+              return;
+            }
+            openEventInfoModal({
+              name: eventItem.label,
+              readableDate: formatReadableDate(eventItem.date),
+              startText: eventItem.startText || "",
+              endText: eventItem.endText || "",
+              description: eventItem.description || "",
+              deletable: eventItem.deletable,
+              dateKey: eventItem.dateValue,
+              eventId: eventItem.eventId,
+            });
+          });
+          upcomingTasksList.appendChild(item);
+        });
       }
 
       prevMonthButton.addEventListener("click", function () {
@@ -647,6 +1549,108 @@
         });
       });
 
+      closeEventModalButton.addEventListener("click", closeEventModal);
+      closeEventInfoButton.addEventListener("click", closeEventInfoModal);
+      eventModalBackdrop.addEventListener("click", function (event) {
+        if (event.target === eventModalBackdrop) {
+          closeEventModal();
+        }
+      });
+      eventInfoBackdrop.addEventListener("click", function (event) {
+        if (event.target === eventInfoBackdrop) {
+          closeEventInfoModal();
+        }
+      });
+      deleteConfirmBackdrop.addEventListener("click", function (event) {
+        if (event.target === deleteConfirmBackdrop) {
+          closeDeleteConfirmModal();
+        }
+      });
+
+      eventForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        if (!selectedEventDate) {
+          closeEventModal();
+          return;
+        }
+
+        const eventName = eventNameInput.value.trim();
+        if (!eventName) {
+          return;
+        }
+
+        syncEndTimeIfNeeded();
+        const startText = formatDisplayTime(
+          startHourSelect.value,
+          startMinuteSelect.value,
+          startMeridiemSelect.value
+        );
+        const endText = formatDisplayTime(
+          endHourSelect.value,
+          endMinuteSelect.value,
+          endMeridiemSelect.value
+        );
+        const startMinutes = to12HourMinutes(
+          startHourSelect.value,
+          startMinuteSelect.value,
+          startMeridiemSelect.value
+        );
+
+        const existing = userEventsByDate.get(selectedEventDate) || [];
+        existing.push({
+          id: String(Date.now()) + Math.random().toString(16).slice(2),
+          name: eventName,
+          description: eventDescriptionInput.value.trim(),
+          startText: startText,
+          endText: endText,
+          startMinutes: startMinutes,
+        });
+        existing.sort(function (a, b) {
+          return a.startMinutes - b.startMinutes;
+        });
+        userEventsByDate.set(selectedEventDate, existing);
+        saveUserEvents();
+
+        renderCalendar(currentYear, currentMonth);
+        closeEventModal();
+      });
+
+      deleteEventButton.addEventListener("click", function () {
+        if (!currentInfoEventRef) {
+          alert("This event cannot be deleted.");
+          return;
+        }
+        deleteConfirmBackdrop.classList.add("open");
+      });
+
+      cancelDeleteEventButton.addEventListener("click", closeDeleteConfirmModal);
+      confirmDeleteEventButton.addEventListener("click", function () {
+        if (!currentInfoEventRef) {
+          closeDeleteConfirmModal();
+          return;
+        }
+        const events = userEventsByDate.get(currentInfoEventRef.dateKey) || [];
+        const filtered = events.filter(function (eventItem) {
+          return eventItem.id !== currentInfoEventRef.eventId;
+        });
+        if (filtered.length) {
+          userEventsByDate.set(currentInfoEventRef.dateKey, filtered);
+        } else {
+          userEventsByDate.delete(currentInfoEventRef.dateKey);
+        }
+        saveUserEvents();
+        renderCalendar(currentYear, currentMonth);
+        closeDeleteConfirmModal();
+        closeEventInfoModal();
+      });
+
+      startHourSelect.addEventListener("change", syncEndTimeIfNeeded);
+      startMinuteSelect.addEventListener("change", syncEndTimeIfNeeded);
+      startMeridiemSelect.addEventListener("change", syncEndTimeIfNeeded);
+      endHourSelect.addEventListener("change", syncEndTimeIfNeeded);
+      endMinuteSelect.addEventListener("change", syncEndTimeIfNeeded);
+      endMeridiemSelect.addEventListener("change", syncEndTimeIfNeeded);
+
       profileButton.addEventListener("click", function (event) {
         event.stopPropagation();
         profileMenu.classList.toggle("open");
@@ -658,8 +1662,26 @@
         }
       });
 
+      loadUserEvents();
       buildSeasonOptions();
+      if (
+        Number.isInteger(requestedYear) &&
+        Number.isInteger(requestedMonth) &&
+        requestedMonth >= 0 &&
+        requestedMonth <= 11 &&
+        !isBeforeMinBound(requestedYear, requestedMonth) &&
+        !isAfterMaxBound(requestedYear, requestedMonth)
+      ) {
+        currentYear = requestedYear;
+        currentMonth = requestedMonth;
+      }
+      populateTimeSelects();
       renderCalendar(currentYear, currentMonth);
+      if (initialView === "volunteers" || initialView === "students" || initialView === "forms") {
+        setActiveView(initialView);
+      } else {
+        setActiveView("calendar");
+      }
     </script>
   </body>
 </html>

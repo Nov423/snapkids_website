@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Profile</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        background: #0f6f9c;
+        color: #ffffff;
+      }
+
+      .top-bar {
+        height: 110px;
+        padding: 0.7rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(7, 42, 71, 0.55);
+        box-shadow: 0 8px 24px rgba(0, 24, 44, 0.35);
+      }
+
+      .top-logo {
+        width: min(34vw, 240px);
+        height: auto;
+        transform: translateY(-20px);
+      }
+
+      .back-link {
+        border: 0;
+        border-radius: 10px;
+        padding: 0.6rem 0.85rem;
+        font-size: 0.95rem;
+        font-weight: 700;
+        text-decoration: none;
+        color: #06273f;
+        background: #dff8ff;
+      }
+
+      .page {
+        padding: 1rem;
+      }
+
+      .card {
+        width: min(820px, 100%);
+        border-radius: 18px;
+        padding: 1rem;
+        background: rgba(7, 42, 71, 0.35);
+        box-shadow:
+          0 18px 40px rgba(0, 24, 44, 0.35),
+          inset 0 0 0 1px rgba(223, 248, 255, 0.2);
+      }
+
+      h1 {
+        margin: 0 0 0.8rem;
+      }
+
+      .line {
+        margin: 0 0 0.7rem;
+        font-size: 1rem;
+        line-height: 1.35;
+      }
+
+      .line strong {
+        color: #dff8ff;
+      }
+
+      .stroke-box {
+        margin-top: 0.8rem;
+        border-radius: 12px;
+        padding: 0.75rem;
+        background: rgba(223, 248, 255, 0.12);
+      }
+
+      .stroke-title {
+        margin: 0 0 0.5rem;
+        font-size: 1rem;
+      }
+
+      .stroke-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 0.35rem;
+      }
+
+      .stroke-list li {
+        font-size: 0.95rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top-bar">
+      <img class="top-logo" src="snapkids_logo.png" alt="SNAPkids logo" />
+      <a class="back-link" href="success.html" id="back-link">Back</a>
+    </header>
+    <main class="page">
+      <section class="card">
+        <h1 id="student-name">Student Profile</h1>
+        <p class="line" id="student-years"><strong>Years with SNAPkids:</strong> --</p>
+        <p class="line" id="student-classes"><strong>Classes attended:</strong> --</p>
+        <p class="line" id="student-worked-on"><strong>Worked on:</strong> --</p>
+        <p class="line" id="student-likes"><strong>Likes:</strong> --</p>
+        <p class="line" id="student-support"><strong>Best support:</strong> --</p>
+        <section class="stroke-box">
+          <h2 class="stroke-title">Stroke Comfort (1-5)</h2>
+          <ul class="stroke-list" id="stroke-comfort-list"></ul>
+        </section>
+      </section>
+    </main>
+    <script>
+      const backLink = document.getElementById("back-link");
+      const params = new URLSearchParams(window.location.search);
+      const name = params.get("name") || "Unknown Student";
+      const sourceTab = params.get("sourceTab");
+      const returnYear = Number(params.get("year"));
+      const returnMonth = Number(params.get("month"));
+      document.getElementById("student-name").textContent = name;
+      const yearsEl = document.getElementById("student-years");
+      const classesEl = document.getElementById("student-classes");
+      const workedOnEl = document.getElementById("student-worked-on");
+      const likesEl = document.getElementById("student-likes");
+      const supportEl = document.getElementById("student-support");
+      const strokeComfortListEl = document.getElementById("stroke-comfort-list");
+
+      function hashName(value) {
+        let hash = 0;
+        for (let i = 0; i < value.length; i += 1) {
+          hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
+        }
+        return hash;
+      }
+
+      function summarizeStudentFeedback(studentName) {
+        const workedOnOptions = [
+          "floating confidence, breath control, and safe water entry",
+          "kick rhythm, streamline body position, and side breathing",
+          "treading water endurance and back-float recovery",
+          "basic freestyle timing and wall push-off technique",
+          "water safety signals, buddy checks, and calm recovery",
+        ];
+        const likesOptions = [
+          "relay-style drills and short timed challenges",
+          "one-on-one coaching with clear step-by-step cues",
+          "visual demonstrations before entering the water",
+          "games that include kickboards and target markers",
+          "repeating familiar routines with predictable structure",
+        ];
+        const supportOptions = [
+          "use short instructions, then immediate in-water practice",
+          "give one correction at a time and reinforce wins quickly",
+          "start with a known warm-up to reduce anxiety",
+          "pair with a consistent experienced volunteer when possible",
+          "offer brief breaks between high-focus drills",
+        ];
+
+        const hash = hashName(studentName);
+        return {
+          workedOn: workedOnOptions[hash % workedOnOptions.length],
+          likes: likesOptions[Math.floor(hash / 7) % likesOptions.length],
+          support: supportOptions[Math.floor(hash / 13) % supportOptions.length],
+        };
+      }
+
+      function buildStudentStats(studentName) {
+        const hash = hashName(studentName);
+        const yearsWithProgram = (hash % 6) + 1;
+        const classesAttended = 8 + (Math.floor(hash / 3) % 65);
+        const strokes = ["Freestyle", "Backstroke", "Breaststroke", "Butterfly"];
+        const comfort = {};
+        strokes.forEach(function (stroke, index) {
+          comfort[stroke] = 1 + ((Math.floor(hash / (index + 2)) + index) % 5);
+        });
+        return {
+          yearsWithProgram: yearsWithProgram,
+          classesAttended: classesAttended,
+          comfort: comfort,
+        };
+      }
+
+      const summary = summarizeStudentFeedback(name);
+      const stats = buildStudentStats(name);
+      yearsEl.innerHTML = "<strong>Years with SNAPkids:</strong> " + stats.yearsWithProgram;
+      classesEl.innerHTML = "<strong>Classes attended:</strong> " + stats.classesAttended;
+      workedOnEl.innerHTML = "<strong>Worked on:</strong> " + summary.workedOn;
+      likesEl.innerHTML = "<strong>Likes:</strong> " + summary.likes;
+      supportEl.innerHTML = "<strong>Best support:</strong> " + summary.support;
+      strokeComfortListEl.innerHTML = "";
+      ["Freestyle", "Backstroke", "Breaststroke", "Butterfly"].forEach(function (stroke) {
+        const item = document.createElement("li");
+        item.innerHTML = "<strong>" + stroke + ":</strong> " + stats.comfort[stroke] + "/5";
+        strokeComfortListEl.appendChild(item);
+      });
+
+      let fallbackHref = "success.html";
+      if (sourceTab === "volunteers" || sourceTab === "students" || sourceTab === "forms") {
+        fallbackHref = "success.html?tab=" + encodeURIComponent(sourceTab);
+        if (
+          Number.isInteger(returnYear) &&
+          Number.isInteger(returnMonth) &&
+          returnMonth >= 0 &&
+          returnMonth <= 11
+        ) {
+          fallbackHref +=
+            "&year=" +
+            encodeURIComponent(returnYear) +
+            "&month=" +
+            encodeURIComponent(returnMonth);
+        }
+      }
+      backLink.href = fallbackHref;
+
+      backLink.addEventListener("click", function (event) {
+        event.preventDefault();
+        if (sourceTab === "volunteers" || sourceTab === "students" || sourceTab === "forms") {
+          window.location.href = fallbackHref;
+          return;
+        }
+        if (window.history.length > 1) {
+          window.history.back();
+        } else {
+          window.location.href = fallbackHref;
+        }
+      });
+    </script>
+  </body>
+</html>
