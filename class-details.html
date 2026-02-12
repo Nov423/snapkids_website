@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Class Details</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        background: #0f6f9c;
+        color: #ffffff;
+      }
+
+      .top-bar {
+        height: 110px;
+        padding: 0.7rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(7, 42, 71, 0.55);
+        box-shadow: 0 8px 24px rgba(0, 24, 44, 0.35);
+      }
+
+      .top-logo {
+        width: min(34vw, 240px);
+        height: auto;
+        transform: translateY(-20px);
+      }
+
+      .back-link {
+        border: 0;
+        border-radius: 10px;
+        padding: 0.6rem 0.85rem;
+        font-size: 0.95rem;
+        font-weight: 700;
+        text-decoration: none;
+        color: #06273f;
+        background: #dff8ff;
+      }
+
+      .page {
+        min-height: calc(100vh - 110px);
+        padding: 1rem;
+      }
+
+      .title {
+        margin: 0 0 0.85rem;
+        font-size: clamp(1.25rem, 2.8vw, 1.9rem);
+      }
+
+      .title-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.8rem;
+        margin-bottom: 0.85rem;
+      }
+
+      .attendance-btn {
+        border: 0;
+        border-radius: 10px;
+        padding: 0.6rem 0.85rem;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #06273f;
+        background: #dff8ff;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .layout {
+        height: clamp(700px, 78vh, 820px);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr);
+        grid-template-areas:
+          "experienced students"
+          "new-volunteer students"
+          "feedback feedback";
+        gap: 1rem;
+      }
+
+      .box {
+        border-radius: 16px;
+        padding: 1rem;
+        background: rgba(7, 42, 71, 0.35);
+        box-shadow:
+          0 18px 40px rgba(0, 24, 44, 0.35),
+          inset 0 0 0 1px rgba(223, 248, 255, 0.2);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .experienced {
+        grid-area: experienced;
+        min-height: 0;
+      }
+
+      .new-volunteer {
+        grid-area: new-volunteer;
+        min-height: 0;
+      }
+
+      .students {
+        grid-area: students;
+        min-height: 0;
+      }
+
+      .feedback {
+        grid-area: feedback;
+        min-height: 0;
+      }
+
+      .pairings {
+        grid-area: feedback;
+        min-height: 0;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .box h2 {
+        margin: 0 0 0.65rem;
+        font-size: 1.15rem;
+      }
+
+      .name-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 0.45rem;
+        flex: 1;
+        overflow-y: auto;
+        min-height: 0;
+      }
+
+      .name-list li {
+        min-height: 34px;
+        display: flex;
+        align-items: center;
+        padding: 0.52rem 0.6rem;
+        border-radius: 8px;
+        background: rgba(223, 248, 255, 0.14);
+      }
+
+      .name-list li.absent {
+        background: rgba(255, 79, 79, 0.32);
+        border: 1px solid rgba(255, 122, 122, 0.85);
+      }
+
+      .feedback-note {
+        margin: 0 0 0.75rem;
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+
+      .feedback-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.45rem;
+        flex: 1;
+        overflow-y: auto;
+        min-height: 0;
+      }
+
+      .feedback-list li {
+        padding: 0.55rem 0.65rem;
+        border-radius: 8px;
+        background: rgba(223, 248, 255, 0.14);
+      }
+
+      .pairings-note {
+        margin: 0 0 0.75rem;
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
+
+      .pairing-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.45rem;
+        flex: 1;
+        overflow-y: auto;
+        min-height: 0;
+      }
+
+      .pairing-list li {
+        padding: 0.55rem 0.65rem;
+        border-radius: 8px;
+        background: rgba(223, 248, 255, 0.14);
+      }
+
+      @media (max-width: 900px) {
+        .top-bar {
+          height: 92px;
+          padding: 0.5rem 0.7rem;
+        }
+
+        .top-logo {
+          width: min(42vw, 180px);
+        }
+
+        .page {
+          min-height: calc(100vh - 92px);
+          padding: 0.7rem;
+        }
+
+        .layout {
+          height: auto;
+          grid-template-columns: 1fr;
+          grid-template-areas:
+            "experienced"
+            "new-volunteer"
+            "students"
+            "feedback";
+        }
+
+        .experienced,
+        .new-volunteer,
+        .students,
+        .feedback,
+        .pairings {
+          min-height: 260px;
+        }
+
+        .feedback-list {
+          grid-template-columns: 1fr;
+        }
+
+        .pairing-list {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top-bar">
+      <img class="top-logo" src="snapkids_logo.png" alt="SNAPkids logo" />
+      <a class="back-link" href="success.html">Back To Calendar</a>
+    </header>
+
+    <main class="page">
+      <div class="title-row">
+        <h1 class="title" id="class-date-title">Class Roster</h1>
+        <button class="attendance-btn" id="confirm-attendance-btn" type="button">Confirm Attendance</button>
+      </div>
+      <section class="layout">
+        <article class="box experienced">
+          <h2>Experienced Volunteer</h2>
+          <ul class="name-list" id="experienced-list"></ul>
+        </article>
+
+        <article class="box new-volunteer">
+          <h2>New Volunteer</h2>
+          <ul class="name-list" id="new-volunteer-list"></ul>
+        </article>
+
+        <article class="box students">
+          <h2>Student</h2>
+          <ul class="name-list" id="student-list"></ul>
+        </article>
+
+        <article class="box feedback">
+          <h2>Feedback</h2>
+          <p class="feedback-note" id="feedback-note">
+            Teacher feedback appears after class and summarizes what they worked on with students.
+          </p>
+          <ul class="feedback-list" id="feedback-list"></ul>
+        </article>
+
+        <article class="box pairings" id="pairings-box">
+          <h2>Optimal Pairings</h2>
+          <p class="pairings-note">
+            Placeholder: when volunteer profiles are added, prior student-volunteer matches will be prioritized.
+          </p>
+          <ul class="pairing-list" id="pairing-list"></ul>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      const firstNames = [
+        "Avery", "Jordan", "Taylor", "Riley", "Parker", "Morgan", "Casey", "Skyler", "Quinn", "Hayden",
+        "Emerson", "Cameron", "Logan", "Drew", "Rowan", "Finley", "Alex", "Reese", "Sawyer", "Blake",
+      ];
+      const lastNames = [
+        "Nguyen", "Patel", "Johnson", "Kim", "Garcia", "Lee", "Smith", "Brown", "Lopez", "Davis",
+        "Wilson", "Martinez", "Clark", "Allen", "Young", "King", "Hall", "Wright", "Scott", "Flores",
+      ];
+
+      function makeNames(count) {
+        const used = new Set();
+        const names = [];
+        while (names.length < count) {
+          const first = firstNames[Math.floor(Math.random() * firstNames.length)];
+          const last = lastNames[Math.floor(Math.random() * lastNames.length)];
+          const full = first + " " + last;
+          if (!used.has(full)) {
+            used.add(full);
+            names.push(full);
+          }
+        }
+        return names;
+      }
+
+      function fillList(listId, entries, showResultStatus) {
+        const list = document.getElementById(listId);
+        list.innerHTML = "";
+        entries.forEach(function (entry) {
+          const item = document.createElement("li");
+          item.textContent = entry.name;
+          if (showResultStatus && !entry.present) {
+            item.classList.add("absent");
+            item.textContent = entry.name + " (Did not attend)";
+          }
+          list.appendChild(item);
+        });
+      }
+
+      function scoreFromText(text) {
+        let score = 0;
+        for (let i = 0; i < text.length; i += 1) {
+          score += text.charCodeAt(i) * (i + 1);
+        }
+        return score;
+      }
+
+      function toAttendanceEntries(names, seed, absentCutoff) {
+        return names.map(function (name) {
+          const score = scoreFromText(name + "|" + seed);
+          const isAbsent = score % 10 < absentCutoff;
+          return { name: name, present: !isAbsent };
+        });
+      }
+
+      function sortAbsentFirst(entries) {
+        return entries.slice().sort(function (a, b) {
+          if (a.present === b.present) {
+            return a.name.localeCompare(b.name);
+          }
+          return a.present ? 1 : -1;
+        });
+      }
+
+      function buildFeedback(students, experiencedVolunteers, newVolunteers) {
+        const activities = [
+          "worked on floating and breath control",
+          "practiced back float confidence drills",
+          "reviewed kickboard balance and kicking rhythm",
+          "did shallow-water safety and entry practice",
+          "focused on streamline and glide form",
+          "practiced treading water and calm recovery",
+          "worked on side breathing timing",
+          "reviewed water safety signals and buddy checks",
+        ];
+
+        const feedback = [];
+        if (!students.length || !experiencedVolunteers.length) {
+          return feedback;
+        }
+
+        students.forEach(function (student, index) {
+          const experienced = experiencedVolunteers[index % experiencedVolunteers.length];
+          const maybeNew = newVolunteers.length ? newVolunteers[index % newVolunteers.length] : null;
+          const activity = activities[index % activities.length];
+          const teacherNames = maybeNew
+            ? experienced.name + " and " + maybeNew.name
+            : experienced.name;
+
+          feedback.push(student.name + ": " + teacherNames + " " + activity + ".");
+        });
+        return feedback;
+      }
+
+      function renderFeedback(items) {
+        const feedbackList = document.getElementById("feedback-list");
+        feedbackList.innerHTML = "";
+        items.forEach(function (text) {
+          const item = document.createElement("li");
+          item.textContent = text;
+          feedbackList.appendChild(item);
+        });
+      }
+
+      function createPairings(students, experiencedVolunteers, newVolunteers) {
+        const assignments = new Map();
+        students.forEach(function (student) {
+          assignments.set(student.name, []);
+        });
+
+        students.forEach(function (student, index) {
+          const experienced = experiencedVolunteers[index % experiencedVolunteers.length];
+          if (experienced) {
+            assignments.get(student.name).push(experienced.name);
+          }
+        });
+
+        newVolunteers.forEach(function (volunteer, index) {
+          const student = students[index % students.length];
+          if (student) {
+            assignments.get(student.name).push(volunteer.name);
+          }
+        });
+
+        return assignments;
+      }
+
+      function renderPairings(assignments) {
+        const pairingList = document.getElementById("pairing-list");
+        pairingList.innerHTML = "";
+        assignments.forEach(function (volunteers, student) {
+          const item = document.createElement("li");
+          item.textContent = student + " -> " + (volunteers.length ? volunteers.join(", ") : "No assigned volunteers");
+          pairingList.appendChild(item);
+        });
+      }
+
+      function startOfDay(date) {
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      }
+
+      function parseLocalDateFromParam(value) {
+        if (!value) {
+          return null;
+        }
+        const parts = value.split("-");
+        if (parts.length !== 3) {
+          return null;
+        }
+        const year = Number(parts[0]);
+        const month = Number(parts[1]);
+        const day = Number(parts[2]);
+        if (Number.isNaN(year) || Number.isNaN(month) || Number.isNaN(day)) {
+          return null;
+        }
+        return new Date(year, month - 1, day);
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const dateParam = params.get("date");
+      const titleEl = document.getElementById("class-date-title");
+      const feedbackBoxEl = document.querySelector(".feedback");
+      const pairingsBoxEl = document.getElementById("pairings-box");
+      const feedbackNoteEl = document.getElementById("feedback-note");
+      const confirmAttendanceButton = document.getElementById("confirm-attendance-btn");
+      let classDate = null;
+      if (dateParam) {
+        const parsedDate = parseLocalDateFromParam(dateParam);
+        if (parsedDate && !Number.isNaN(parsedDate.getTime())) {
+          classDate = parsedDate;
+          titleEl.textContent =
+            "Class Roster - " +
+            parsedDate.toLocaleDateString(undefined, {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            });
+        }
+      }
+
+      const today = startOfDay(new Date());
+      const isPastClass = classDate ? startOfDay(classDate) < today : false;
+      const seed = classDate ? classDate.toISOString().slice(0, 10) : "no-date";
+      let experiencedEntries = toAttendanceEntries(makeNames(15), seed + "-exp", isPastClass ? 2 : 0);
+      let newVolunteerEntries = toAttendanceEntries(makeNames(15), seed + "-new", isPastClass ? 2 : 0);
+      let studentEntries = toAttendanceEntries(makeNames(15), seed + "-stu", isPastClass ? 2 : 0);
+
+      function renderAll() {
+        const showResultStatus = isPastClass;
+        const shownExperienced = showResultStatus ? sortAbsentFirst(experiencedEntries) : experiencedEntries;
+        const shownNewVolunteers = showResultStatus ? sortAbsentFirst(newVolunteerEntries) : newVolunteerEntries;
+        const shownStudents = showResultStatus ? sortAbsentFirst(studentEntries) : studentEntries;
+
+        fillList("experienced-list", shownExperienced, showResultStatus);
+        fillList("new-volunteer-list", shownNewVolunteers, showResultStatus);
+        fillList("student-list", shownStudents, showResultStatus);
+
+        if (showResultStatus) {
+          const studentsForFeedback = studentEntries.filter(function (entry) { return entry.present; });
+          const expForFeedback = experiencedEntries.filter(function (entry) { return entry.present; });
+          const newForFeedback = newVolunteerEntries.filter(function (entry) { return entry.present; });
+          const feedbackItems = buildFeedback(studentsForFeedback, expForFeedback, newForFeedback);
+          if (!feedbackItems.length) {
+            renderFeedback(["No attendance-confirmed teacher feedback is available yet."]);
+            return;
+          }
+          renderFeedback(feedbackItems);
+          return;
+        }
+
+        const assignments = createPairings(studentEntries, experiencedEntries, newVolunteerEntries);
+        renderPairings(assignments);
+      }
+
+      if (isPastClass) {
+        titleEl.textContent = titleEl.textContent.replace("Class Roster -", "Class Results -");
+        feedbackNoteEl.textContent =
+          "Teacher feedback below reflects what was completed during class for attending students.";
+        confirmAttendanceButton.style.display = "none";
+        pairingsBoxEl.classList.add("hidden");
+      } else {
+        feedbackBoxEl.classList.add("hidden");
+      }
+
+      confirmAttendanceButton.addEventListener("click", function () {
+        const allVolunteers = experiencedEntries
+          .concat(newVolunteerEntries)
+          .map(function (entry) { return entry.name; });
+        if (!allVolunteers.length) {
+          alert("No volunteers remain on the list.");
+          return;
+        }
+
+        alert("Placeholder: attendance emails sent to all volunteers.");
+
+        const declinedInput = prompt(
+          "Enter volunteers who declined (comma-separated), exactly as listed:\n\n" + allVolunteers.join(", ")
+        );
+
+        if (!declinedInput || !declinedInput.trim()) {
+          return;
+        }
+
+        const declinedSet = new Set(
+          declinedInput
+            .split(",")
+            .map(function (name) {
+              return name.trim().toLowerCase();
+            })
+            .filter(Boolean)
+        );
+
+        experiencedEntries = experiencedEntries.filter(function (entry) {
+          return !declinedSet.has(entry.name.toLowerCase());
+        });
+        newVolunteerEntries = newVolunteerEntries.filter(function (entry) {
+          return !declinedSet.has(entry.name.toLowerCase());
+        });
+
+        renderAll();
+      });
+
+      renderAll();
+    </script>
+  </body>
+</html>

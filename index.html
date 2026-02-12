@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SnapKids Sign In</title>
+    <style>
+      :root {
+        --water-deep: #0b3d5c;
+        --water-mid: #0f6f9c;
+        --water-light: #58c7f3;
+        --foam: #dff8ff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        background: #0f6f9c;
+        overflow: hidden;
+      }
+
+      .corner-logo {
+        position: fixed;
+        top: -36px;
+        left: 1rem;
+        width: min(34vw, 240px);
+        height: auto;
+        z-index: 3;
+      }
+
+      .card {
+        position: relative;
+        z-index: 2;
+        width: min(90vw, 460px);
+        padding: 2rem;
+        border-radius: 20px;
+        background: rgba(7, 42, 71, 0.35);
+        backdrop-filter: blur(2px);
+        box-shadow:
+          0 18px 40px rgba(0, 24, 44, 0.45),
+          inset 0 0 0 1px rgba(223, 248, 255, 0.2);
+      }
+
+      .buttons {
+        display: grid;
+        gap: 1rem;
+      }
+
+      button {
+        width: 100%;
+        border: 0;
+        padding: 0.95rem 1rem;
+        border-radius: 12px;
+        color: #06273f;
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        background: linear-gradient(180deg, #ffffff, var(--foam));
+        cursor: pointer;
+        transition: transform 140ms ease, box-shadow 140ms ease;
+        box-shadow: 0 8px 20px rgba(8, 37, 58, 0.25);
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(8, 37, 58, 0.35);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      @media (max-width: 860px) {
+        .corner-logo {
+          width: min(42vw, 180px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <img class="corner-logo" src="snapkids_logo.png" alt="SNAPkids logo" />
+    <main class="card">
+      <div class="buttons">
+        <button type="button" onclick="window.location.href='admin-login.html'">
+          Sign in as an administrator
+        </button>
+        <button type="button">Sign in as a student</button>
+        <button type="button">Sign in as a volunteer</button>
+      </div>
+    </main>
+  </body>
+</html>

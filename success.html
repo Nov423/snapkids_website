@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Class Calendar</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        background: #0f6f9c;
+        color: #ffffff;
+      }
+
+      .top-bar {
+        height: 110px;
+        padding: 0.7rem 1rem;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        background: rgba(7, 42, 71, 0.55);
+        box-shadow: 0 8px 24px rgba(0, 24, 44, 0.35);
+      }
+
+      .top-logo {
+        width: min(34vw, 240px);
+        height: auto;
+        transform: translateY(-20px);
+      }
+
+      .profile-btn {
+        position: absolute;
+        right: 1rem;
+        border: 0;
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        background: rgba(223, 248, 255, 0.95);
+        color: #06273f;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .profile-menu {
+        position: absolute;
+        top: calc(100% - 8px);
+        right: 1rem;
+        min-width: 140px;
+        border-radius: 12px;
+        padding: 0.5rem;
+        background: rgba(7, 42, 71, 0.97);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+        display: none;
+        z-index: 5;
+      }
+
+      .profile-menu.open {
+        display: block;
+      }
+
+      .logout-link {
+        display: block;
+        width: 100%;
+        border: 0;
+        border-radius: 8px;
+        padding: 0.55rem 0.65rem;
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #06273f;
+        background: #dff8ff;
+        text-align: center;
+      }
+
+      .profile-btn svg {
+        width: 22px;
+        height: 22px;
+        stroke: currentColor;
+      }
+
+      .page {
+        min-height: calc(100vh - 110px);
+        height: auto;
+        padding: 1rem;
+        display: flex;
+        gap: 1rem;
+      }
+
+      .sidebar {
+        width: min(28vw, 320px);
+        min-height: calc(100vh - 142px);
+        border-radius: 18px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+        background: rgba(7, 42, 71, 0.35);
+        box-shadow:
+          0 18px 40px rgba(0, 24, 44, 0.35),
+          inset 0 0 0 1px rgba(223, 248, 255, 0.2);
+      }
+
+      .sidebar-btn {
+        flex: 1;
+        width: 100%;
+        border: 0;
+        border-radius: 12px;
+        padding: 0.72rem 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: clamp(1.08rem, 1.6vw, 1.45rem);
+        font-weight: 700;
+        white-space: nowrap;
+        color: #06273f;
+        background: #dff8ff;
+        cursor: pointer;
+        transition: transform 120ms ease, background 120ms ease;
+      }
+
+      .sidebar-btn.active {
+        background: rgba(7, 42, 71, 0.92);
+        color: #ffffff;
+        transform: translateX(10px);
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      .content-pane {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .calendar-shell {
+        min-height: calc(100vh - 142px);
+        width: min(950px, 100%);
+        height: auto;
+        border-radius: 18px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        overflow: visible;
+        background: rgba(7, 42, 71, 0.35);
+        box-shadow:
+          0 18px 40px rgba(0, 24, 44, 0.35),
+          inset 0 0 0 1px rgba(223, 248, 255, 0.2);
+      }
+
+      .calendar-shell.blank-mode {
+        justify-content: center;
+      }
+
+      .blank-panel {
+        display: none;
+        width: 100%;
+        height: 100%;
+        border-radius: 14px;
+        background: rgba(223, 248, 255, 0.08);
+      }
+
+      .calendar-shell.blank-mode .blank-panel {
+        display: block;
+      }
+
+      .calendar-shell.blank-mode .calendar-controls,
+      .calendar-shell.blank-mode .calendar-weekdays,
+      .calendar-shell.blank-mode .calendar-days {
+        display: none;
+      }
+
+      .calendar-controls {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+      }
+
+      .month-nav {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        flex: 1;
+      }
+
+      .term-select {
+        border: 0;
+        border-radius: 10px;
+        padding: 0.6rem 0.85rem;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #06273f;
+        background: #dff8ff;
+      }
+
+      .month-title {
+        margin: 0;
+        font-size: clamp(1.15rem, 2.5vw, 1.7rem);
+        min-width: 190px;
+        text-align: center;
+      }
+
+      .month-nav-btn {
+        border: 0;
+        width: 36px;
+        height: 36px;
+        border-radius: 9px;
+        font-size: 1.15rem;
+        font-weight: 700;
+        line-height: 1;
+        color: #06273f;
+        background: #dff8ff;
+        cursor: pointer;
+      }
+
+      .today-btn {
+        border: 0;
+        border-radius: 9px;
+        padding: 0.55rem 0.75rem;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #06273f;
+        background: #dff8ff;
+        cursor: pointer;
+      }
+
+      .controls-right {
+        width: 120px;
+        flex-shrink: 0;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .calendar-weekdays,
+      .calendar-days {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 0.55rem;
+      }
+
+      .calendar-weekdays {
+        margin-bottom: 0.55rem;
+      }
+
+      .weekday {
+        text-align: center;
+        font-weight: 700;
+        padding: 0.45rem 0.2rem;
+        border-radius: 10px;
+        background: rgba(223, 248, 255, 0.2);
+      }
+
+      .calendar-days {
+        flex: 1;
+        grid-auto-rows: minmax(88px, auto);
+      }
+
+      .day-cell {
+        border-radius: 12px;
+        padding: 0.6rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 0.5rem;
+        background: rgba(223, 248, 255, 0.14);
+        font-weight: 700;
+      }
+
+      .class-tag {
+        border: 0;
+        width: 100%;
+        text-align: center;
+        padding: 0.28rem 0.4rem;
+        border-radius: 8px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #06273f;
+        background: #dff8ff;
+        cursor: pointer;
+      }
+
+      .day-cell.empty {
+        background: rgba(223, 248, 255, 0.05);
+      }
+
+      @media (max-width: 760px) {
+        .top-bar {
+          height: 92px;
+          padding: 0.5rem 0.7rem;
+        }
+
+        .top-logo {
+          width: min(42vw, 180px);
+        }
+
+        .page {
+          min-height: calc(100vh - 92px);
+          height: auto;
+          padding: 0.7rem;
+          flex-direction: column;
+          gap: 0.7rem;
+        }
+
+        .sidebar {
+          width: 100%;
+          min-height: 0;
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+
+        .sidebar-btn {
+          flex: 1 1 45%;
+          text-align: center;
+          transform: none;
+          border-radius: 12px;
+        }
+
+        .sidebar-btn.active {
+          transform: none;
+          border-radius: 12px;
+        }
+
+        .content-pane {
+          justify-content: stretch;
+        }
+
+        .calendar-controls {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .month-nav {
+          width: 100%;
+        }
+
+        .controls-right {
+          width: 100%;
+          justify-content: flex-end;
+        }
+
+        .calendar-days {
+          grid-auto-rows: minmax(64px, auto);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top-bar">
+      <img class="top-logo" src="snapkids_logo.png" alt="SNAPkids logo" />
+      <button class="profile-btn" id="profile-btn" type="button" aria-label="Profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21a8 8 0 0 0-16 0" />
+          <circle cx="12" cy="8" r="4" />
+        </svg>
+      </button>
+      <div class="profile-menu" id="profile-menu">
+        <a class="logout-link" href="index.html">Log out</a>
+      </div>
+    </header>
+    <main class="page">
+      <aside class="sidebar">
+        <button class="sidebar-btn active" type="button" data-view="calendar">Calender</button>
+        <button class="sidebar-btn" type="button" data-view="volunteers">Volunteers</button>
+        <button class="sidebar-btn" type="button" data-view="students">Students</button>
+        <button class="sidebar-btn" type="button" data-view="forms">Volunteer Forms</button>
+      </aside>
+      <div class="content-pane">
+        <section class="calendar-shell" id="main-panel">
+          <div class="calendar-controls">
+            <select class="term-select" id="term-select" aria-label="Select season and year"></select>
+            <div class="month-nav">
+              <button class="month-nav-btn" id="prev-month" type="button" aria-label="Previous month">&lt;</button>
+              <h1 class="month-title" id="month-title"></h1>
+              <button class="month-nav-btn" id="next-month" type="button" aria-label="Next month">&gt;</button>
+            </div>
+            <div class="controls-right">
+              <button class="today-btn" id="today-btn" type="button">Today</button>
+            </div>
+          </div>
+
+          <div class="calendar-weekdays">
+            <div class="weekday">Sun</div>
+            <div class="weekday">Mon</div>
+            <div class="weekday">Tue</div>
+            <div class="weekday">Wed</div>
+            <div class="weekday">Thu</div>
+            <div class="weekday">Fri</div>
+            <div class="weekday">Sat</div>
+          </div>
+          <div class="calendar-days" id="calendar-days"></div>
+          <div class="blank-panel" id="blank-panel"></div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const now = new Date();
+      let currentYear = now.getFullYear();
+      let currentMonth = now.getMonth();
+      const monthTitle = document.getElementById("month-title");
+      const calendarDays = document.getElementById("calendar-days");
+      const prevMonthButton = document.getElementById("prev-month");
+      const nextMonthButton = document.getElementById("next-month");
+      const todayButton = document.getElementById("today-btn");
+      const termSelect = document.getElementById("term-select");
+      const mainPanel = document.getElementById("main-panel");
+      const profileButton = document.getElementById("profile-btn");
+      const profileMenu = document.getElementById("profile-menu");
+      const sidebarButtons = Array.from(document.querySelectorAll(".sidebar-btn"));
+      let minAllowedYear = now.getFullYear();
+      let minAllowedMonth = now.getMonth();
+      let maxAllowedYear = now.getFullYear();
+      let maxAllowedMonth = now.getMonth();
+
+      function setActiveView(viewName) {
+        sidebarButtons.forEach(function (button) {
+          button.classList.toggle("active", button.dataset.view === viewName);
+        });
+        mainPanel.classList.toggle("blank-mode", viewName !== "calendar");
+      }
+
+      function getSeasonForMonth(monthIndex) {
+        if (monthIndex <= 2) {
+          return "winter";
+        }
+        if (monthIndex <= 5) {
+          return "spring";
+        }
+        if (monthIndex <= 8) {
+          return "summer";
+        }
+        return "fall";
+      }
+
+      function getStartMonthForSeason(season) {
+        if (season === "winter") {
+          return 0;
+        }
+        if (season === "spring") {
+          return 3;
+        }
+        if (season === "summer") {
+          return 6;
+        }
+        return 9;
+      }
+
+      function capitalize(value) {
+        return value.charAt(0).toUpperCase() + value.slice(1);
+      }
+
+      function formatLocalDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return year + "-" + month + "-" + day;
+      }
+
+      function shiftSeason(season, year, offset) {
+        const seasons = ["winter", "spring", "summer", "fall"];
+        let index = seasons.indexOf(season);
+        let shiftedYear = year;
+        let remaining = offset;
+
+        while (remaining !== 0) {
+          if (remaining > 0) {
+            index += 1;
+            if (index > 3) {
+              index = 0;
+              shiftedYear += 1;
+            }
+            remaining -= 1;
+          } else {
+            index -= 1;
+            if (index < 0) {
+              index = 3;
+              shiftedYear -= 1;
+            }
+            remaining += 1;
+          }
+        }
+
+        return { season: seasons[index], year: shiftedYear };
+      }
+
+      function buildSeasonOptions() {
+        termSelect.innerHTML = "";
+        const baseSeason = getSeasonForMonth(now.getMonth());
+        const baseYear = now.getFullYear();
+        const earliest = shiftSeason(baseSeason, baseYear, -2);
+        const latest = shiftSeason(baseSeason, baseYear, 3);
+
+        minAllowedYear = earliest.year;
+        minAllowedMonth = getStartMonthForSeason(earliest.season);
+        maxAllowedYear = latest.year;
+        maxAllowedMonth = getStartMonthForSeason(latest.season) + 2;
+
+        for (let offset = -2; offset <= 3; offset += 1) {
+          const item = shiftSeason(baseSeason, baseYear, offset);
+          const value = item.season + "-" + item.year;
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = capitalize(item.season) + " " + item.year;
+          termSelect.appendChild(option);
+        }
+      }
+
+      function isBeforeMinBound(year, month) {
+        if (year < minAllowedYear) {
+          return true;
+        }
+        if (year === minAllowedYear && month < minAllowedMonth) {
+          return true;
+        }
+        return false;
+      }
+
+      function isAfterMaxBound(year, month) {
+        if (year > maxAllowedYear) {
+          return true;
+        }
+        if (year === maxAllowedYear && month > maxAllowedMonth) {
+          return true;
+        }
+        return false;
+      }
+
+      function syncSeasonFromMonth() {
+        const season = getSeasonForMonth(currentMonth);
+        const optionValue = season + "-" + currentYear;
+        const matching = termSelect.querySelector('option[value="' + optionValue + '"]');
+        if (matching) {
+          termSelect.value = optionValue;
+        }
+      }
+
+      function renderCalendar(year, month) {
+        calendarDays.innerHTML = "";
+        const displayDate = new Date(year, month, 1);
+
+        monthTitle.textContent = displayDate.toLocaleDateString(undefined, {
+          month: "long",
+          year: "numeric",
+        });
+
+        const firstWeekday = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        for (let i = 0; i < firstWeekday; i += 1) {
+          const emptyCell = document.createElement("div");
+          emptyCell.className = "day-cell empty";
+          calendarDays.appendChild(emptyCell);
+        }
+
+        for (let day = 1; day <= daysInMonth; day += 1) {
+          const date = new Date(year, month, day);
+          const dayCell = document.createElement("div");
+          dayCell.className = "day-cell";
+          dayCell.textContent = String(day);
+
+          if (date.getDay() === 6) {
+            const classTag = document.createElement("button");
+            classTag.type = "button";
+            classTag.className = "class-tag";
+            classTag.textContent = "Class";
+            const dateValue = formatLocalDate(date);
+            classTag.addEventListener("click", function () {
+              window.location.href = "class-details.html?date=" + dateValue;
+            });
+            dayCell.appendChild(classTag);
+          }
+
+          calendarDays.appendChild(dayCell);
+        }
+
+        syncSeasonFromMonth();
+      }
+
+      prevMonthButton.addEventListener("click", function () {
+        let nextMonth = currentMonth - 1;
+        let nextYear = currentYear;
+        if (nextMonth < 0) {
+          nextMonth = 11;
+          nextYear -= 1;
+        }
+        if (isBeforeMinBound(nextYear, nextMonth)) {
+          return;
+        }
+        currentMonth = nextMonth;
+        currentYear = nextYear;
+        renderCalendar(currentYear, currentMonth);
+      });
+
+      nextMonthButton.addEventListener("click", function () {
+        let nextMonth = currentMonth + 1;
+        let nextYear = currentYear;
+        if (nextMonth > 11) {
+          nextMonth = 0;
+          nextYear += 1;
+        }
+        if (isAfterMaxBound(nextYear, nextMonth)) {
+          return;
+        }
+        currentMonth = nextMonth;
+        currentYear = nextYear;
+        renderCalendar(currentYear, currentMonth);
+      });
+
+      termSelect.addEventListener("change", function () {
+        const selected = termSelect.value;
+        const parts = selected.split("-");
+        const season = parts[0];
+        const year = Number(parts[1]);
+        if (!season || Number.isNaN(year)) {
+          return;
+        }
+        currentYear = year;
+        currentMonth = getStartMonthForSeason(season);
+        renderCalendar(currentYear, currentMonth);
+      });
+
+      todayButton.addEventListener("click", function () {
+        const targetYear = now.getFullYear();
+        const targetMonth = now.getMonth();
+        if (isBeforeMinBound(targetYear, targetMonth) || isAfterMaxBound(targetYear, targetMonth)) {
+          return;
+        }
+        currentYear = targetYear;
+        currentMonth = targetMonth;
+        renderCalendar(currentYear, currentMonth);
+      });
+
+      sidebarButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          setActiveView(button.dataset.view);
+        });
+      });
+
+      profileButton.addEventListener("click", function (event) {
+        event.stopPropagation();
+        profileMenu.classList.toggle("open");
+      });
+
+      document.addEventListener("click", function (event) {
+        if (!profileMenu.contains(event.target) && event.target !== profileButton) {
+          profileMenu.classList.remove("open");
+        }
+      });
+
+      buildSeasonOptions();
+      renderCalendar(currentYear, currentMonth);
+    </script>
+  </body>
+</html>
