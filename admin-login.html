@@ -232,6 +232,7 @@
         const password = passwordInput.value;
 
         if (username === "admin" && password === "123456") {
+          sessionStorage.setItem("snapkids_admin_authenticated", "true");
           window.location.href = "success.html";
         } else {
           usernameInput.classList.add("input-error");

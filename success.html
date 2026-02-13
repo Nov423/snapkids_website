@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Class Calendar</title>
+    <script>
+      (function () {
+        if (sessionStorage.getItem("snapkids_admin_authenticated") !== "true") {
+          window.location.replace("admin-login.html");
+        }
+      })();
+    </script>
     <style>
       * {
         box-sizing: border-box;
@@ -190,6 +197,20 @@
       .inbox-title {
         margin: 0;
         font-size: 1.25rem;
+      }
+
+      .directory-toolbar {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.55rem;
+      }
+
+      .directory-search {
+        width: 100%;
+        border: 0;
+        border-radius: 10px;
+        padding: 0.55rem 0.65rem;
+        font-size: 0.92rem;
       }
 
       .inbox-list {
@@ -692,7 +713,7 @@
       </button>
       <div class="profile-menu" id="profile-menu">
         <a class="logout-link" href="profile-page.html">View Profile</a>
-        <a class="logout-link" href="index.html">Log out</a>
+        <a class="logout-link" href="index.html" id="logout-link">Log out</a>
       </div>
     </header>
     <main class="page">
@@ -854,6 +875,7 @@
       const blankPanel = document.getElementById("blank-panel");
       const profileButton = document.getElementById("profile-btn");
       const profileMenu = document.getElementById("profile-menu");
+      const logoutLink = document.getElementById("logout-link");
       const sidebarButtons = Array.from(document.querySelectorAll(".sidebar-btn"));
       const params = new URLSearchParams(window.location.search);
       const initialView = params.get("tab");
@@ -926,6 +948,52 @@
         return name.toLowerCase().replace(/\s+/g, "-");
       }
 
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function splitName(fullName) {
+        const parts = fullName.trim().split(/\s+/);
+        if (parts.length <= 1) {
+          return { first: fullName.trim(), last: fullName.trim() };
+        }
+        return {
+          first: parts[0],
+          last: parts.slice(1).join(" "),
+        };
+      }
+
+      function formatLastFirstName(fullName) {
+        const parsed = splitName(fullName);
+        return parsed.last + ", " + parsed.first;
+      }
+
+      function compareNamesByLastFirst(nameA, nameB) {
+        const a = splitName(nameA);
+        const b = splitName(nameB);
+        const lastCompare = a.last.localeCompare(b.last);
+        if (lastCompare !== 0) {
+          return lastCompare;
+        }
+        return a.first.localeCompare(b.first);
+      }
+
+      function matchesNameSearch(fullName, queryText) {
+        if (!queryText) {
+          return true;
+        }
+        const normalized = queryText.toLowerCase();
+        return (
+          fullName.toLowerCase().includes(normalized) ||
+          formatLastFirstName(fullName).toLowerCase().includes(normalized)
+        );
+      }
+
       function renderBlankPanel(viewName) {
         if (viewName === "forms") {
           blankPanel.className = "blank-panel";
@@ -971,75 +1039,113 @@
 
         if (viewName === "volunteers") {
           blankPanel.className = "blank-panel";
+          blankPanel.innerHTML =
+            '<div class="inbox">' +
+              '<div class="directory-toolbar">' +
+                '<h2 class="inbox-title">Volunteers</h2>' +
+                '<input class="directory-search" id="directory-search" type="search" placeholder="Search volunteers" />' +
+              "</div>" +
+              '<ul class="inbox-list" id="directory-list"></ul>' +
+            "</div>";
+
+          const searchInput = document.getElementById("directory-search");
+          const listEl = document.getElementById("directory-list");
           const sortedVolunteers = volunteersDirectory
             .slice()
             .sort(function (a, b) {
-              return a.name.localeCompare(b.name);
+              return compareNamesByLastFirst(a.name, b.name);
             });
-          const listHtml = sortedVolunteers
-            .map(function (volunteer) {
-              const profileHref =
-                "volunteer-profile.html?name=" +
-                encodeURIComponent(volunteer.name) +
-                "&hours=" +
-                encodeURIComponent(formatQuarterHours(volunteer.hours)) +
-                "&sourceTab=volunteers" +
-                "&year=" +
-                encodeURIComponent(currentYear) +
-                "&month=" +
-                encodeURIComponent(currentMonth);
-              return (
-                '<li class="inbox-item">' +
-                  '<div class="request-name">' + volunteer.name + "</div>" +
-                  '<div class="request-actions">' +
-                    '<a class="request-btn" href="' + profileHref + '">View Profile</a>' +
-                  "</div>" +
-                "</li>"
-              );
-            })
-            .join("");
 
-          blankPanel.innerHTML =
-            '<div class="inbox">' +
-              '<h2 class="inbox-title">Volunteers</h2>' +
-              '<ul class="inbox-list">' + listHtml + "</ul>" +
-            "</div>";
+          function renderVolunteerList() {
+            const queryText = searchInput.value.trim();
+            const listHtml = sortedVolunteers
+              .filter(function (volunteer) {
+                return matchesNameSearch(volunteer.name, queryText);
+              })
+              .map(function (volunteer) {
+                const profileHref =
+                  "volunteer-profile.html?name=" +
+                  encodeURIComponent(volunteer.name) +
+                  "&hours=" +
+                  encodeURIComponent(formatQuarterHours(volunteer.hours)) +
+                  "&sourceTab=volunteers" +
+                  "&year=" +
+                  encodeURIComponent(currentYear) +
+                  "&month=" +
+                  encodeURIComponent(currentMonth);
+                return (
+                  '<li class="inbox-item">' +
+                    '<div class="request-name">' + escapeHtml(formatLastFirstName(volunteer.name)) + "</div>" +
+                    '<div class="request-actions">' +
+                      '<a class="request-btn" href="' + profileHref + '">View Profile</a>' +
+                    "</div>" +
+                  "</li>"
+                );
+              })
+              .join("");
+
+            listEl.innerHTML =
+              listHtml ||
+              '<li class="inbox-item"><div class="request-name">No volunteers found</div></li>';
+          }
+
+          searchInput.addEventListener("input", renderVolunteerList);
+          renderVolunteerList();
           return;
         }
 
         if (viewName === "students") {
           blankPanel.className = "blank-panel";
+          blankPanel.innerHTML =
+            '<div class="inbox">' +
+              '<div class="directory-toolbar">' +
+                '<h2 class="inbox-title">Students</h2>' +
+                '<input class="directory-search" id="directory-search" type="search" placeholder="Search students" />' +
+              "</div>" +
+              '<ul class="inbox-list" id="directory-list"></ul>' +
+            "</div>";
+
+          const searchInput = document.getElementById("directory-search");
+          const listEl = document.getElementById("directory-list");
           const sortedStudents = studentsDirectory
             .slice()
             .sort(function (a, b) {
-              return a.localeCompare(b);
+              return compareNamesByLastFirst(a, b);
             });
-          const listHtml = sortedStudents
-            .map(function (studentName) {
-              const profileHref =
-                "student-profile.html?name=" +
-                encodeURIComponent(studentName) +
-                "&sourceTab=students" +
-                "&year=" +
-                encodeURIComponent(currentYear) +
-                "&month=" +
-                encodeURIComponent(currentMonth);
-              return (
-                '<li class="inbox-item">' +
-                  '<div class="request-name">' + studentName + "</div>" +
-                  '<div class="request-actions">' +
-                    '<a class="request-btn" href="' + profileHref + '">View Profile</a>' +
-                  "</div>" +
-                "</li>"
-              );
-            })
-            .join("");
 
-          blankPanel.innerHTML =
-            '<div class="inbox">' +
-              '<h2 class="inbox-title">Students</h2>' +
-              '<ul class="inbox-list">' + listHtml + "</ul>" +
-            "</div>";
+          function renderStudentList() {
+            const queryText = searchInput.value.trim();
+            const listHtml = sortedStudents
+              .filter(function (studentName) {
+                return matchesNameSearch(studentName, queryText);
+              })
+              .map(function (studentName) {
+                const profileHref =
+                  "student-profile.html?name=" +
+                  encodeURIComponent(studentName) +
+                  "&sourceTab=students" +
+                  "&year=" +
+                  encodeURIComponent(currentYear) +
+                  "&month=" +
+                  encodeURIComponent(currentMonth);
+                return (
+                  '<li class="inbox-item">' +
+                    '<div class="request-name">' + escapeHtml(formatLastFirstName(studentName)) + "</div>" +
+                    '<div class="request-actions">' +
+                      '<a class="request-btn" href="' + profileHref + '">View Profile</a>' +
+                    "</div>" +
+                  "</li>"
+                );
+              })
+              .join("");
+
+            listEl.innerHTML =
+              listHtml ||
+              '<li class="inbox-item"><div class="request-name">No students found</div></li>';
+          }
+
+          searchInput.addEventListener("input", renderStudentList);
+          renderStudentList();
           return;
         }
 
@@ -1660,6 +1766,10 @@
         if (!profileMenu.contains(event.target) && event.target !== profileButton) {
           profileMenu.classList.remove("open");
         }
+      });
+
+      logoutLink.addEventListener("click", function () {
+        sessionStorage.removeItem("snapkids_admin_authenticated");
       });
 
       loadUserEvents();

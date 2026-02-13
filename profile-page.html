@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile</title>
+    <script>
+      (function () {
+        if (sessionStorage.getItem("snapkids_admin_authenticated") !== "true") {
+          window.location.replace("admin-login.html");
+        }
+      })();
+    </script>
     <style>
       * {
         box-sizing: border-box;
