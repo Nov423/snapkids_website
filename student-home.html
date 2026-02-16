@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Home</title>
+    <script>
+      (function () {
+        const studentAuthed = sessionStorage.getItem("snapkids_student_authenticated") === "true";
+        if (!studentAuthed) {
+          window.location.replace("student-login.html");
+        }
+      })();
+    </script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        background: #0f6f9c;
+        color: #ffffff;
+      }
+
+      .corner-logo {
+        position: fixed;
+        top: -36px;
+        left: 1rem;
+        width: min(34vw, 240px);
+        height: auto;
+        z-index: 2;
+      }
+
+      .page {
+        min-height: 100vh;
+        padding: 6.2rem 1rem 1rem;
+      }
+
+      .card {
+        width: min(1100px, 100%);
+        margin: 0 auto;
+        border-radius: 18px;
+        padding: 1rem;
+        background: rgba(7, 42, 71, 0.35);
+        backdrop-filter: blur(2px);
+        box-shadow:
+          0 18px 40px rgba(0, 24, 44, 0.45),
+          inset 0 0 0 1px rgba(223, 248, 255, 0.2);
+      }
+
+      .top-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 0.9rem;
+      }
+
+      h1 {
+        margin: 0;
+      }
+
+      .welcome {
+        margin: 0.3rem 0 0;
+        color: #dff8ff;
+      }
+
+      .logout {
+        border: 0;
+        border-radius: 10px;
+        padding: 0.6rem 0.9rem;
+        color: #06273f;
+        font-size: 0.95rem;
+        font-weight: 700;
+        background: #dff8ff;
+        cursor: pointer;
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.9rem;
+      }
+
+      .panel {
+        border-radius: 14px;
+        padding: 0.95rem;
+        background: rgba(223, 248, 255, 0.12);
+      }
+
+      .panel h2 {
+        margin: 0 0 0.75rem;
+        font-size: 1.1rem;
+      }
+
+      .line {
+        margin: 0 0 0.55rem;
+        line-height: 1.35;
+      }
+
+      .line strong {
+        color: #dff8ff;
+      }
+
+      .upcoming-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 0.6rem;
+      }
+
+      .upcoming-item {
+        border-radius: 10px;
+        padding: 0.6rem;
+        background: rgba(5, 33, 54, 0.45);
+      }
+
+      .upcoming-date {
+        margin: 0;
+        font-size: 0.88rem;
+        color: #dff8ff;
+      }
+
+      .upcoming-title {
+        margin: 0.2rem 0 0;
+        font-size: 0.95rem;
+      }
+
+      @media (max-width: 860px) {
+        .corner-logo {
+          width: min(42vw, 180px);
+        }
+
+        .page {
+          padding-top: 5rem;
+        }
+
+        .split {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <img class="corner-logo" src="snapkids_logo.png" alt="SNAPkids logo" />
+    <main class="page">
+      <section class="card">
+        <div class="top-row">
+          <div>
+            <h1>Student Dashboard</h1>
+            <p class="welcome" id="welcome-text">Welcome</p>
+          </div>
+          <button class="logout" id="logout-btn" type="button">Sign Out</button>
+        </div>
+
+        <section class="split">
+          <article class="panel">
+            <h2>Profile</h2>
+            <p class="line" id="student-name-line"><strong>Name:</strong> --</p>
+            <p class="line" id="student-email-line"><strong>Email:</strong> --</p>
+            <p class="line" id="student-phone-line"><strong>Phone:</strong> --</p>
+            <p class="line" id="student-years-line"><strong>Years with SNAPkids:</strong> --</p>
+            <p class="line" id="student-classes-line"><strong>Classes attended:</strong> --</p>
+            <p class="line" id="student-focus-line"><strong>Current focus:</strong> --</p>
+          </article>
+
+          <article class="panel">
+            <h2>Upcoming</h2>
+            <ul class="upcoming-list" id="upcoming-list"></ul>
+          </article>
+        </section>
+      </section>
+    </main>
+    <script>
+      const name = sessionStorage.getItem("snapkids_student_name") || "Student";
+      document.getElementById("welcome-text").textContent = "Welcome, " + name;
+      const upcomingList = document.getElementById("upcoming-list");
+      const userEventsStorageKey = "snapkids_user_events_v1";
+      const deletedClassesStorageKey = "snapkids_deleted_classes_v1";
+      const focusOptions = [
+        "Freestyle timing and breathing rhythm",
+        "Backstroke body position and balance",
+        "Water safety cues and calm entry",
+        "Kickboard endurance and lane awareness",
+      ];
+
+      function hashName(value) {
+        let hash = 0;
+        for (let i = 0; i < value.length; i += 1) {
+          hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
+        }
+        return hash;
+      }
+
+      function buildContactInfo(fullName) {
+        const parts = fullName.trim().toLowerCase().split(/\s+/);
+        const first = (parts[0] || "student").replace(/[^a-z]/g, "");
+        const last = (parts.slice(1).join("") || "snapkids").replace(/[^a-z]/g, "");
+        const hash = hashName(fullName);
+        const email = first + "." + last + "@snapkids.org";
+        const area = 200 + (hash % 800);
+        const prefix = 200 + (Math.floor(hash / 7) % 800);
+        const line = String(1000 + (Math.floor(hash / 13) % 9000));
+        const phone =
+          "(" +
+          String(area).padStart(3, "0") +
+          ") " +
+          String(prefix).padStart(3, "0") +
+          "-" +
+          line;
+        return { email: email, phone: phone };
+      }
+
+      function formatLongDate(date) {
+        return date.toLocaleDateString(undefined, {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+        });
+      }
+
+      function addDays(date, days) {
+        const copy = new Date(date);
+        copy.setDate(copy.getDate() + days);
+        return copy;
+      }
+
+      function formatLocalDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return year + "-" + month + "-" + day;
+      }
+
+      function loadAdminUserEvents() {
+        const byDate = new Map();
+        try {
+          const raw = localStorage.getItem(userEventsStorageKey);
+          if (!raw) {
+            return byDate;
+          }
+          const parsed = JSON.parse(raw);
+          Object.keys(parsed).forEach(function (dateKey) {
+            const events = Array.isArray(parsed[dateKey]) ? parsed[dateKey] : [];
+            byDate.set(dateKey, events);
+          });
+        } catch (error) {
+          // Ignore malformed saved data.
+        }
+        return byDate;
+      }
+
+      function loadDeletedClassDates() {
+        const deleted = new Set();
+        try {
+          const raw = localStorage.getItem(deletedClassesStorageKey);
+          if (!raw) {
+            return deleted;
+          }
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            parsed.forEach(function (dateKey) {
+              if (typeof dateKey === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dateKey)) {
+                deleted.add(dateKey);
+              }
+            });
+          }
+        } catch (error) {
+          // Ignore malformed saved data.
+        }
+        return deleted;
+      }
+
+      function buildUpcomingFromAdminSchedule() {
+        const events = [];
+        const userEventsByDate = loadAdminUserEvents();
+        const deletedClassDates = loadDeletedClassDates();
+        const today = new Date();
+        const startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const limitDate = addDays(startDate, 365);
+        const cursor = new Date(startDate);
+
+        while (events.length < 8 && cursor <= limitDate) {
+          const dateKey = formatLocalDate(cursor);
+
+          if (cursor.getDay() === 6 && !deletedClassDates.has(dateKey)) {
+            events.push({
+              date: new Date(cursor),
+              startMinutes: 9 * 60,
+              dateLabel: formatLongDate(cursor),
+              summary: "9:00 AM - 10:00 AM  |  Class",
+            });
+          }
+
+          const dayEvents = userEventsByDate.get(dateKey) || [];
+          dayEvents.forEach(function (eventItem) {
+            const startText = eventItem.startText || "";
+            const endText = eventItem.endText || "";
+            const eventTime = startText && endText ? startText + " - " + endText : startText || "Time TBD";
+            events.push({
+              date: new Date(cursor),
+              startMinutes: typeof eventItem.startMinutes === "number" ? eventItem.startMinutes : 0,
+              dateLabel: formatLongDate(cursor),
+              summary: eventTime + "  |  " + (eventItem.name || "Event"),
+            });
+          });
+
+          events.sort(function (a, b) {
+            const dateDiff = a.date.getTime() - b.date.getTime();
+            if (dateDiff !== 0) {
+              return dateDiff;
+            }
+            return a.startMinutes - b.startMinutes;
+          });
+
+          if (events.length > 8) {
+            events.length = 8;
+          }
+
+          cursor.setDate(cursor.getDate() + 1);
+        }
+        return events;
+      }
+
+      const hash = hashName(name);
+      const contact = buildContactInfo(name);
+      document.getElementById("student-name-line").innerHTML = "<strong>Name:</strong> " + name;
+      document.getElementById("student-email-line").innerHTML = "<strong>Email:</strong> " + contact.email;
+      document.getElementById("student-phone-line").innerHTML = "<strong>Phone:</strong> " + contact.phone;
+      document.getElementById("student-years-line").innerHTML =
+        "<strong>Years with SNAPkids:</strong> " + ((hash % 6) + 1);
+      document.getElementById("student-classes-line").innerHTML =
+        "<strong>Classes attended:</strong> " + (10 + (hash % 70));
+      document.getElementById("student-focus-line").innerHTML =
+        "<strong>Current focus:</strong> " + focusOptions[hash % focusOptions.length];
+
+      upcomingList.innerHTML = "";
+      const upcomingEvents = buildUpcomingFromAdminSchedule();
+      if (!upcomingEvents.length) {
+        const emptyItem = document.createElement("li");
+        emptyItem.className = "upcoming-item";
+        emptyItem.innerHTML =
+          '<p class="upcoming-date">No upcoming items</p><p class="upcoming-title">Administrator calendar has no scheduled events.</p>';
+        upcomingList.appendChild(emptyItem);
+      }
+
+      upcomingEvents.forEach(function (entry) {
+        const item = document.createElement("li");
+        item.className = "upcoming-item";
+        item.innerHTML =
+          '<p class="upcoming-date">' + entry.dateLabel + "</p>" + '<p class="upcoming-title">' + entry.summary + "</p>";
+        upcomingList.appendChild(item);
+      });
+
+      document.getElementById("logout-btn").addEventListener("click", function () {
+        sessionStorage.removeItem("snapkids_student_authenticated");
+        sessionStorage.removeItem("snapkids_student_name");
+        window.location.href = "student-login.html";
+      });
+    </script>
+  </body>
+</html>

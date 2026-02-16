@@ -41,6 +41,11 @@
         transform: translateY(-20px);
       }
 
+      .logo-home-link {
+        display: inline-flex;
+        align-items: center;
+      }
+
       .profile-btn {
         position: absolute;
         right: 1rem;
@@ -158,12 +163,13 @@
       .calendar-shell {
         min-height: calc(100vh - 142px);
         width: 100%;
-        height: auto;
+        height: calc(100vh - 142px);
         border-radius: 18px;
         padding: 1rem;
         display: flex;
         flex-direction: column;
-        overflow: visible;
+        overflow-y: auto;
+        overflow-x: hidden;
         background: rgba(7, 42, 71, 0.35);
         box-shadow:
           0 18px 40px rgba(0, 24, 44, 0.35),
@@ -273,9 +279,9 @@
       }
 
       .calendar-controls {
-        display: flex;
+        display: grid;
+        grid-template-columns: max-content minmax(0, 1fr) max-content;
         align-items: center;
-        justify-content: space-between;
         gap: 0.8rem;
         margin-bottom: 1rem;
       }
@@ -284,7 +290,7 @@
         flex: 1;
         min-height: 0;
         display: grid;
-        grid-template-columns: 1.55fr 0.75fr;
+        grid-template-columns: 1.8fr 0.5fr;
         gap: 0.9rem;
       }
 
@@ -327,17 +333,22 @@
       }
 
       .month-nav {
-        display: flex;
+        display: grid;
+        grid-template-columns: 40px minmax(0, 1fr) 40px;
         align-items: center;
-        justify-content: center;
-        gap: 0.6rem;
-        flex: 1;
+        gap: 0.35rem;
+        min-width: 0;
+        width: 100%;
+        max-width: 620px;
+        margin: 0 auto;
       }
 
       .term-select {
         border: 0;
         border-radius: 10px;
         padding: 0.6rem 0.85rem;
+        width: auto;
+        justify-self: start;
         font-size: 1rem;
         font-weight: 700;
         color: #06273f;
@@ -347,8 +358,11 @@
       .month-title {
         margin: 0;
         font-size: clamp(1.15rem, 2.5vw, 1.7rem);
-        min-width: 190px;
+        min-width: 0;
         text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .month-nav-btn {
@@ -362,6 +376,7 @@
         color: #06273f;
         background: #dff8ff;
         cursor: pointer;
+        justify-self: center;
       }
 
       .today-btn {
@@ -376,10 +391,22 @@
       }
 
       .controls-right {
-        width: 120px;
+        width: auto;
         flex-shrink: 0;
         display: flex;
+        align-items: center;
         justify-content: flex-end;
+        gap: 0.55rem;
+      }
+
+      .view-select {
+        border: 0;
+        border-radius: 9px;
+        padding: 0.55rem 0.65rem;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #06273f;
+        background: #dff8ff;
       }
 
       .calendar-weekdays,
@@ -461,6 +488,197 @@
 
       .day-cell.empty {
         background: rgba(223, 248, 255, 0.05);
+      }
+
+      .calendar-days.week-mode {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        grid-auto-rows: minmax(220px, auto);
+      }
+
+      .week-day-cell {
+        border-radius: 12px;
+        padding: 0.55rem;
+        background: rgba(223, 248, 255, 0.14);
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        min-height: 0;
+      }
+
+      .week-day-header {
+        font-size: 0.82rem;
+        font-weight: 700;
+        opacity: 0.95;
+      }
+
+      .week-events {
+        display: grid;
+        gap: 0.35rem;
+        overflow-y: auto;
+        min-height: 0;
+      }
+
+      .week-event-btn {
+        border: 0;
+        border-radius: 8px;
+        padding: 0.3rem 0.4rem;
+        font-size: 0.78rem;
+        text-align: left;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .week-event-btn.class-event {
+        color: #06273f;
+        background: #dff8ff;
+      }
+
+      .week-event-btn.readd-event {
+        color: #ffffff;
+        background: #2f8f47;
+      }
+
+      .week-event-btn.user-event {
+        color: #ffffff;
+        background: rgba(7, 42, 71, 0.78);
+      }
+
+      .calendar-days.day-mode {
+        display: block;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .day-detail-wrap {
+        border-radius: 12px;
+        padding: 0.8rem;
+        background: rgba(223, 248, 255, 0.14);
+        min-height: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+
+      .day-detail-title {
+        margin: 0;
+        font-size: 1rem;
+      }
+
+      .day-timeline-shell {
+        border-radius: 10px;
+        background: rgba(7, 42, 71, 0.35);
+        overflow-y: auto;
+        overflow-x: hidden;
+        min-height: 0;
+        flex: 1;
+      }
+
+      .day-timeline-grid {
+        display: grid;
+        grid-template-columns: 74px 1fr;
+        min-width: 0;
+      }
+
+      .time-axis {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border-right: 1px solid rgba(223, 248, 255, 0.22);
+      }
+
+      .time-axis li {
+        height: 56px;
+        padding-top: 0.1rem;
+        text-align: right;
+        padding-right: 0.45rem;
+        font-size: 0.72rem;
+        opacity: 0.9;
+      }
+
+      .timeline-track {
+        position: relative;
+        min-height: 1344px;
+        background-image: repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent 55px,
+          rgba(223, 248, 255, 0.14) 55px,
+          rgba(223, 248, 255, 0.14) 56px
+        );
+      }
+
+      .timeline-event {
+        position: absolute;
+        left: 0.45rem;
+        right: 0.45rem;
+        border: 0;
+        border-radius: 9px;
+        padding: 0.35rem 0.45rem;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 0.12rem;
+        font-size: 0.76rem;
+        cursor: pointer;
+        overflow: hidden;
+      }
+
+      .timeline-event.user-event {
+        color: #ffffff;
+        background: rgba(7, 42, 71, 0.84);
+      }
+
+      .timeline-event.class-event {
+        color: #06273f;
+        background: #dff8ff;
+      }
+
+      .timeline-event.readd-event {
+        color: #ffffff;
+        background: #2f8f47;
+      }
+
+      .class-tag.readd-tag {
+        color: #ffffff;
+        background: #2f8f47;
+      }
+
+      .timeline-event-time {
+        margin: 0;
+        font-size: 0.7rem;
+        opacity: 0.92;
+      }
+
+      .timeline-event-label {
+        margin: 0;
+        font-size: 0.78rem;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      .current-time-line {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #ffffff;
+        box-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+        pointer-events: none;
+      }
+
+      .current-time-label {
+        position: absolute;
+        right: 0.45rem;
+        transform: translateY(-50%);
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: #ffffff;
+        background: rgba(7, 42, 71, 0.7);
+        padding: 0.12rem 0.34rem;
+        border-radius: 8px;
+        pointer-events: none;
       }
 
       .modal-backdrop {
@@ -606,6 +824,17 @@
         font-size: 0.92rem;
       }
 
+      .visibility-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .visibility-toggle input[type="checkbox"] {
+        width: auto;
+        transform: scale(1.1);
+      }
+
       .time-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -674,9 +903,15 @@
           justify-content: stretch;
         }
 
+        .calendar-shell {
+          height: auto;
+          min-height: calc(100vh - 92px);
+        }
+
         .calendar-controls {
           flex-direction: column;
-          align-items: flex-start;
+          align-items: stretch;
+          display: flex;
         }
 
         .calendar-main {
@@ -704,7 +939,9 @@
   </head>
   <body>
     <header class="top-bar">
-      <img class="top-logo" src="snapkids_logo.png" alt="SNAPkids logo" />
+      <a class="logo-home-link" href="success.html?tab=calendar" aria-label="Go to calendar">
+        <img class="top-logo" src="snapkids_logo.png" alt="SNAPkids logo" />
+      </a>
       <button class="profile-btn" id="profile-btn" type="button" aria-label="Profile">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 21a8 8 0 0 0-16 0" />
@@ -734,6 +971,11 @@
             </div>
             <div class="controls-right">
               <button class="today-btn" id="today-btn" type="button">Today</button>
+              <select class="view-select" id="calendar-view-select" aria-label="Select calendar view">
+                <option value="month">Month</option>
+                <option value="week">Week</option>
+                <option value="day">Day</option>
+              </select>
             </div>
           </div>
 
@@ -797,6 +1039,11 @@
           <label for="event-description">General Description</label>
           <textarea id="event-description" rows="4"></textarea>
 
+          <label class="visibility-toggle" for="event-visible-to-users">
+            <input id="event-visible-to-users" type="checkbox" checked />
+            <span>Visible to student and volunteer accounts</span>
+          </label>
+
           <button class="add-event-btn" type="submit">Add event</button>
         </form>
       </div>
@@ -823,6 +1070,8 @@
           <input id="info-end" type="text" readonly />
           <label>Description</label>
           <textarea id="info-description" rows="4" readonly></textarea>
+          <label>Visibility</label>
+          <input id="info-visibility" type="text" readonly />
         </div>
       </div>
     </div>
@@ -836,6 +1085,16 @@
         </div>
       </div>
     </div>
+    <div class="confirm-backdrop" id="readd-confirm-backdrop">
+      <div class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="readd-confirm-title">
+        <h3 class="confirm-title" id="readd-confirm-title">Re-add class?</h3>
+        <p class="confirm-text">This will restore the class in the calendar and upcoming tasks.</p>
+        <div class="confirm-actions">
+          <button class="confirm-cancel" id="cancel-readd-class" type="button">Cancel</button>
+          <button class="confirm-delete" id="confirm-readd-class" type="button">Re-add Class</button>
+        </div>
+      </div>
+    </div>
 
     <script>
       const now = new Date();
@@ -843,15 +1102,19 @@
       let currentMonth = now.getMonth();
       const monthTitle = document.getElementById("month-title");
       const calendarDays = document.getElementById("calendar-days");
+      const calendarWeekdays = document.querySelector(".calendar-weekdays");
       const upcomingTasksList = document.getElementById("upcoming-tasks-list");
       const eventModalBackdrop = document.getElementById("event-modal-backdrop");
       const eventInfoBackdrop = document.getElementById("event-info-backdrop");
       const deleteConfirmBackdrop = document.getElementById("delete-confirm-backdrop");
+      const reAddConfirmBackdrop = document.getElementById("readd-confirm-backdrop");
       const closeEventModalButton = document.getElementById("close-event-modal");
       const closeEventInfoButton = document.getElementById("close-event-info");
       const deleteEventButton = document.getElementById("delete-event-btn");
       const cancelDeleteEventButton = document.getElementById("cancel-delete-event");
       const confirmDeleteEventButton = document.getElementById("confirm-delete-event");
+      const cancelReAddClassButton = document.getElementById("cancel-readd-class");
+      const confirmReAddClassButton = document.getElementById("confirm-readd-class");
       const eventForm = document.getElementById("event-form");
       const eventNameInput = document.getElementById("event-name");
       const eventModalTitle = document.getElementById("event-modal-title");
@@ -862,14 +1125,17 @@
       const endMinuteSelect = document.getElementById("end-minute");
       const endMeridiemSelect = document.getElementById("end-meridiem");
       const eventDescriptionInput = document.getElementById("event-description");
+      const eventVisibleToUsersInput = document.getElementById("event-visible-to-users");
       const infoNameInput = document.getElementById("info-name");
       const infoDateInput = document.getElementById("info-date");
       const infoStartInput = document.getElementById("info-start");
       const infoEndInput = document.getElementById("info-end");
       const infoDescriptionInput = document.getElementById("info-description");
+      const infoVisibilityInput = document.getElementById("info-visibility");
       const prevMonthButton = document.getElementById("prev-month");
       const nextMonthButton = document.getElementById("next-month");
       const todayButton = document.getElementById("today-btn");
+      const calendarViewSelect = document.getElementById("calendar-view-select");
       const termSelect = document.getElementById("term-select");
       const mainPanel = document.getElementById("main-panel");
       const blankPanel = document.getElementById("blank-panel");
@@ -885,12 +1151,16 @@
       let minAllowedMonth = now.getMonth();
       let maxAllowedYear = now.getFullYear();
       let maxAllowedMonth = now.getMonth();
+      let currentViewMode = "month";
+      let currentFocusDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      let currentTimeTicker = null;
       let selectedEventDate = null;
       let currentInfoEventRef = null;
       const userEventsStorageKey = "snapkids_user_events_v1";
       const deletedClassesStorageKey = "snapkids_deleted_classes_v1";
       const userEventsByDate = new Map();
       const deletedClassDates = new Set();
+      let pendingReAddDate = null;
       const volunteerFormRequests = [
         { name: "Avery Johnson", hours: 18.25 },
         { name: "Maya Patel", hours: 26.5 },
@@ -1213,6 +1483,29 @@
         return hourValue + ":" + minuteValue + " " + meridiemValue;
       }
 
+      function parseDisplayTimeToMinutes(text) {
+        const match = String(text || "")
+          .trim()
+          .match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+        if (!match) {
+          return null;
+        }
+        let hour = Number(match[1]);
+        const minute = Number(match[2]);
+        const meridiem = match[3].toUpperCase();
+        if (Number.isNaN(hour) || Number.isNaN(minute)) {
+          return null;
+        }
+        if (meridiem === "AM") {
+          if (hour === 12) {
+            hour = 0;
+          }
+        } else if (hour !== 12) {
+          hour += 12;
+        }
+        return hour * 60 + minute;
+      }
+
       function loadUserEvents() {
         try {
           const raw = localStorage.getItem(userEventsStorageKey);
@@ -1230,6 +1523,14 @@
                 startText: eventItem.startText || "",
                 endText: eventItem.endText || "",
                 startMinutes: typeof eventItem.startMinutes === "number" ? eventItem.startMinutes : 0,
+                endMinutes:
+                  typeof eventItem.endMinutes === "number"
+                    ? eventItem.endMinutes
+                    : (parseDisplayTimeToMinutes(eventItem.endText) ?? 0),
+                visibleToStudentVolunteer:
+                  typeof eventItem.visibleToStudentVolunteer === "boolean"
+                    ? eventItem.visibleToStudentVolunteer
+                    : true,
               };
             });
             userEventsByDate.set(dateKey, normalized);
@@ -1258,6 +1559,72 @@
         } catch (error) {
           // Ignore malformed saved data.
         }
+      }
+
+      function removeDeletedClassDate(dateValue) {
+        deletedClassDates.delete(dateValue);
+        localStorage.setItem(deletedClassesStorageKey, JSON.stringify(Array.from(deletedClassDates)));
+      }
+
+      function openReAddConfirmModal(dateValue) {
+        pendingReAddDate = dateValue;
+        const reAddBackdrop = document.getElementById("readd-confirm-backdrop");
+        reAddBackdrop.classList.add("open");
+      }
+
+      function closeReAddConfirmModal() {
+        pendingReAddDate = null;
+        const reAddBackdrop = document.getElementById("readd-confirm-backdrop");
+        reAddBackdrop.classList.remove("open");
+      }
+
+      function getRecurringClassTemplates(dayOfWeek, dateValue) {
+        const classes = [];
+        if (dayOfWeek === 6) {
+          classes.push({
+            type: "class",
+            label: "Palo Alto Classes",
+            startText: "12:30 PM",
+            endText: "3:30 PM",
+            description: "Palo Alto Family YMCA (3412 Ross Road, Palo Alto)",
+            dateValue: dateValue,
+            startMinutes: 12 * 60 + 30,
+            endMinutes: 15 * 60 + 30,
+            deletable: false,
+            visibleToStudentVolunteer: true,
+          });
+        }
+        if (dayOfWeek === 5) {
+          classes.push({
+            type: "class",
+            label: "Albany & Berkeley Classes",
+            startText: "5:30 PM",
+            endText: "7:30 PM",
+            description:
+              "Albany Aquatic Center (1311 Portland Ave, Albany) and Downtown Berkeley YMCA (2001 Allston Way, Berkeley)",
+            dateValue: dateValue,
+            startMinutes: 17 * 60 + 30,
+            endMinutes: 19 * 60 + 30,
+            deletable: false,
+            visibleToStudentVolunteer: true,
+          });
+        }
+        if (dayOfWeek === 0) {
+          classes.push({
+            type: "class",
+            label: "Albany & Berkeley Classes",
+            startText: "10:30 AM",
+            endText: "1:30 PM",
+            description:
+              "Albany Aquatic Center (1311 Portland Ave, Albany) and Downtown Berkeley YMCA (2001 Allston Way, Berkeley)",
+            dateValue: dateValue,
+            startMinutes: 10 * 60 + 30,
+            endMinutes: 13 * 60 + 30,
+            deletable: false,
+            visibleToStudentVolunteer: true,
+          });
+        }
+        return classes;
       }
 
       function saveUserEvents() {
@@ -1389,7 +1756,112 @@
         );
       }
 
-      function renderCalendar(year, month) {
+      function getBoundStartDate() {
+        return new Date(minAllowedYear, minAllowedMonth, 1);
+      }
+
+      function getBoundEndDate() {
+        return new Date(maxAllowedYear, maxAllowedMonth + 1, 0);
+      }
+
+      function isDateOutsideBounds(date) {
+        return date < getBoundStartDate() || date > getBoundEndDate();
+      }
+
+      function setFocusDate(nextDate) {
+        const nextYear = nextDate.getFullYear();
+        const nextMonth = nextDate.getMonth();
+        const nextDay = nextDate.getDate();
+        const maxDay = new Date(nextYear, nextMonth + 1, 0).getDate();
+        currentFocusDate = new Date(nextYear, nextMonth, Math.min(nextDay, maxDay));
+        currentYear = currentFocusDate.getFullYear();
+        currentMonth = currentFocusDate.getMonth();
+      }
+
+      function getEventsForDate(date) {
+        const dateValue = formatLocalDate(date);
+        const events = [];
+        const recurringClasses = getRecurringClassTemplates(date.getDay(), dateValue);
+        if (deletedClassDates.has(dateValue)) {
+          recurringClasses.forEach(function (classItem) {
+            events.push({
+              type: "readd-class",
+              label: "Re-add Class",
+              startText: classItem.startText,
+              endText: classItem.endText,
+              description: "Restore " + classItem.label + " to the calendar.",
+              dateValue: dateValue,
+              classLabel: classItem.label,
+              startMinutes: classItem.startMinutes,
+              endMinutes: classItem.endMinutes,
+              deletable: false,
+              visibleToStudentVolunteer: true,
+            });
+          });
+        } else {
+          recurringClasses.forEach(function (classItem) {
+            events.push(classItem);
+          });
+        }
+        const userEvents = userEventsByDate.get(dateValue) || [];
+        userEvents.forEach(function (eventItem) {
+          const startMinutes = typeof eventItem.startMinutes === "number" ? eventItem.startMinutes : 0;
+          const rawEndMinutes =
+            typeof eventItem.endMinutes === "number"
+              ? eventItem.endMinutes
+              : (parseDisplayTimeToMinutes(eventItem.endText) ?? startMinutes + 60);
+          const endMinutes = Math.max(startMinutes + 15, rawEndMinutes);
+          events.push({
+            type: "user",
+            label: eventItem.name,
+            startText: eventItem.startText || "",
+            endText: eventItem.endText || "",
+            description: eventItem.description || "",
+            dateValue: dateValue,
+            startMinutes: startMinutes,
+            endMinutes: endMinutes,
+            eventId: eventItem.id,
+            deletable: true,
+            visibleToStudentVolunteer:
+              typeof eventItem.visibleToStudentVolunteer === "boolean"
+                ? eventItem.visibleToStudentVolunteer
+                : true,
+          });
+        });
+        events.sort(function (a, b) {
+          return a.startMinutes - b.startMinutes;
+        });
+        return events;
+      }
+
+      function openCalendarEvent(eventItem, date) {
+        if (eventItem.type === "class") {
+          window.location.href = buildClassDetailsUrl(eventItem.dateValue);
+          return;
+        }
+        if (eventItem.type === "readd-class") {
+          openReAddConfirmModal(eventItem.dateValue);
+          return;
+        }
+        openEventInfoModal({
+          name: eventItem.label,
+          readableDate: formatReadableDate(date),
+          startText: eventItem.startText || "",
+          endText: eventItem.endText || "",
+          description: eventItem.description || "",
+          visibleToStudentVolunteer:
+            typeof eventItem.visibleToStudentVolunteer === "boolean"
+              ? eventItem.visibleToStudentVolunteer
+              : true,
+          deletable: true,
+          dateKey: eventItem.dateValue,
+          eventId: eventItem.eventId,
+        });
+      }
+
+      function renderMonthView(year, month) {
+        calendarWeekdays.style.display = "grid";
+        calendarDays.classList.remove("week-mode", "day-mode");
         calendarDays.innerHTML = "";
         const displayDate = new Date(year, month, 1);
 
@@ -1410,6 +1882,10 @@
         for (let day = 1; day <= daysInMonth; day += 1) {
           const date = new Date(year, month, day);
           const dateValue = formatLocalDate(date);
+          const dayEvents = getEventsForDate(date);
+          const classEvents = dayEvents.filter(function (item) { return item.type === "class"; });
+          const readdEvents = dayEvents.filter(function (item) { return item.type === "readd-class"; });
+          const addedEvents = dayEvents.filter(function (item) { return item.type === "user"; });
           const dayCell = document.createElement("div");
           dayCell.className = "day-cell clickable";
           const dayNumber = document.createElement("div");
@@ -1421,45 +1897,309 @@
             openEventModal(date);
           });
 
-          if (date.getDay() === 6 && !deletedClassDates.has(dateValue)) {
+          if (classEvents.length) {
             const classTag = document.createElement("button");
             classTag.type = "button";
             classTag.className = "class-tag";
-            classTag.textContent = "Class";
+            classTag.textContent = classEvents[0].label;
+            classTag.title = classEvents[0].startText + " - " + classEvents[0].endText;
             classTag.addEventListener("click", function (event) {
               event.stopPropagation();
               window.location.href = buildClassDetailsUrl(dateValue);
             });
             dayCell.appendChild(classTag);
+          } else if (readdEvents.length) {
+            const readdTag = document.createElement("button");
+            readdTag.type = "button";
+            readdTag.className = "class-tag readd-tag";
+            readdTag.textContent = "Re-add Class";
+            readdTag.addEventListener("click", function (event) {
+              event.stopPropagation();
+              openReAddConfirmModal(dateValue);
+            });
+            dayCell.appendChild(readdTag);
           }
 
-          const addedEvents = userEventsByDate.get(dateValue) || [];
           addedEvents.forEach(function (eventItem) {
             const eventTag = document.createElement("button");
             eventTag.type = "button";
             eventTag.className = "user-event-tag";
-            eventTag.textContent = eventItem.name;
+            eventTag.textContent = eventItem.label;
             eventTag.addEventListener("click", function (event) {
               event.stopPropagation();
-              openEventInfoModal({
-                name: eventItem.name,
-                readableDate: formatReadableDate(date),
-                startText: eventItem.startText || "",
-                endText: eventItem.endText || "",
-                description: eventItem.description || "",
-                deletable: true,
-                dateKey: dateValue,
-                eventId: eventItem.id,
-              });
+              openCalendarEvent(eventItem, date);
             });
             dayCell.appendChild(eventTag);
           });
 
           calendarDays.appendChild(dayCell);
         }
+      }
+
+      function renderWeekView() {
+        calendarWeekdays.style.display = "none";
+        calendarDays.classList.remove("day-mode");
+        calendarDays.classList.add("week-mode");
+        calendarDays.innerHTML = "";
+        const start = new Date(currentFocusDate);
+        start.setDate(start.getDate() - start.getDay());
+
+        const end = new Date(start);
+        end.setDate(end.getDate() + 6);
+        monthTitle.textContent =
+          "Week of " +
+          start.toLocaleDateString(undefined, { month: "short", day: "numeric" }) +
+          " - " +
+          end.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+
+        for (let i = 0; i < 7; i += 1) {
+          const date = new Date(start);
+          date.setDate(start.getDate() + i);
+          const dayCell = document.createElement("article");
+          dayCell.className = "week-day-cell";
+          const header = document.createElement("div");
+          header.className = "week-day-header";
+          header.textContent = date.toLocaleDateString(undefined, {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+          });
+          dayCell.appendChild(header);
+
+          const eventsWrap = document.createElement("div");
+          eventsWrap.className = "week-events";
+          const events = getEventsForDate(date);
+          if (!events.length) {
+            const empty = document.createElement("div");
+            empty.className = "day-detail-time";
+            empty.textContent = "No events";
+            eventsWrap.appendChild(empty);
+          } else {
+            events.forEach(function (eventItem) {
+              const button = document.createElement("button");
+              button.type = "button";
+              button.className =
+                "week-event-btn " +
+                (eventItem.type === "class"
+                  ? "class-event"
+                  : (eventItem.type === "readd-class" ? "readd-event" : "user-event"));
+              button.textContent = (eventItem.startText ? eventItem.startText + " - " : "") + eventItem.label;
+              button.addEventListener("click", function () {
+                openCalendarEvent(eventItem, date);
+              });
+              eventsWrap.appendChild(button);
+            });
+          }
+          dayCell.appendChild(eventsWrap);
+          calendarDays.appendChild(dayCell);
+        }
+      }
+
+      function renderDayView() {
+        calendarWeekdays.style.display = "none";
+        calendarDays.classList.remove("week-mode");
+        calendarDays.classList.add("day-mode");
+        calendarDays.innerHTML = "";
+        monthTitle.textContent = currentFocusDate.toLocaleDateString(undefined, {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        });
+
+        const wrap = document.createElement("article");
+        wrap.className = "day-detail-wrap";
+        const title = document.createElement("h3");
+        title.className = "day-detail-title";
+        title.textContent = "Events";
+        wrap.appendChild(title);
+
+        const timelineShell = document.createElement("div");
+        timelineShell.className = "day-timeline-shell";
+        const timelineGrid = document.createElement("div");
+        timelineGrid.className = "day-timeline-grid";
+        const axis = document.createElement("ul");
+        axis.className = "time-axis";
+        const track = document.createElement("div");
+        track.className = "timeline-track";
+        const hourPixel = 56;
+
+        for (let hour = 0; hour < 24; hour += 1) {
+          const item = document.createElement("li");
+          const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+          const meridiem = hour < 12 ? "AM" : "PM";
+          item.textContent = displayHour + ":00 " + meridiem;
+          axis.appendChild(item);
+        }
+
+        const events = getEventsForDate(currentFocusDate);
+        if (events.length) {
+          const laidOutEvents = layoutTimelineEvents(events);
+          events.forEach(function (eventItem) {
+            const layoutInfo = laidOutEvents.get(eventItem) || { col: 0, cols: 1 };
+            const eventEl = document.createElement("button");
+            eventEl.type = "button";
+            eventEl.className =
+              "timeline-event " +
+              (eventItem.type === "class"
+                ? "class-event"
+                : (eventItem.type === "readd-class" ? "readd-event" : "user-event"));
+            const clampedStart = Math.max(0, Math.min(24 * 60, eventItem.startMinutes));
+            const clampedEnd = Math.max(clampedStart + 15, Math.min(24 * 60, eventItem.endMinutes));
+            const topPx = (clampedStart / 60) * hourPixel;
+            const heightPx = ((clampedEnd - clampedStart) / 60) * hourPixel;
+            eventEl.style.top = topPx + "px";
+            eventEl.style.height = Math.max(22, heightPx) + "px";
+            eventEl.style.right = "auto";
+            eventEl.style.left =
+              "calc(" + ((layoutInfo.col / layoutInfo.cols) * 100).toFixed(6) + "% + 0.45rem)";
+            eventEl.style.width =
+              "calc(" + (100 / layoutInfo.cols).toFixed(6) + "% - 0.9rem)";
+
+            const time = document.createElement("p");
+            time.className = "timeline-event-time";
+            time.textContent =
+              eventItem.startText && eventItem.endText
+                ? eventItem.startText + " - " + eventItem.endText
+                : "All day";
+            const label = document.createElement("p");
+            label.className = "timeline-event-label";
+            label.textContent = eventItem.label;
+            eventEl.appendChild(time);
+            eventEl.appendChild(label);
+            eventEl.addEventListener("click", function () {
+              openCalendarEvent(eventItem, currentFocusDate);
+            });
+            track.appendChild(eventEl);
+          });
+        }
+
+        const line = document.createElement("div");
+        line.className = "current-time-line";
+        const lineLabel = document.createElement("div");
+        lineLabel.className = "current-time-label";
+        track.appendChild(line);
+        track.appendChild(lineLabel);
+
+        function refreshCurrentTimeLine() {
+          const nowLocal = new Date();
+          const isSameDate =
+            nowLocal.getFullYear() === currentFocusDate.getFullYear() &&
+            nowLocal.getMonth() === currentFocusDate.getMonth() &&
+            nowLocal.getDate() === currentFocusDate.getDate();
+          if (!isSameDate) {
+            line.style.display = "none";
+            lineLabel.style.display = "none";
+            return;
+          }
+          const minutes = nowLocal.getHours() * 60 + nowLocal.getMinutes();
+          const topPx = (minutes / 60) * hourPixel;
+          line.style.display = "block";
+          lineLabel.style.display = "inline-block";
+          line.style.top = topPx + "px";
+          lineLabel.style.top = topPx + "px";
+          lineLabel.textContent = nowLocal.toLocaleTimeString(undefined, {
+            hour: "numeric",
+            minute: "2-digit",
+          });
+        }
+
+        refreshCurrentTimeLine();
+        if (currentTimeTicker) {
+          window.clearInterval(currentTimeTicker);
+          currentTimeTicker = null;
+        }
+        currentTimeTicker = window.setInterval(refreshCurrentTimeLine, 30000);
+
+        timelineGrid.appendChild(axis);
+        timelineGrid.appendChild(track);
+        timelineShell.appendChild(timelineGrid);
+        wrap.appendChild(timelineShell);
+        calendarDays.appendChild(wrap);
+      }
+
+      function renderCalendar(year, month) {
+        if (typeof year === "number" && typeof month === "number") {
+          setFocusDate(new Date(year, month, currentFocusDate.getDate()));
+        } else {
+          setFocusDate(currentFocusDate);
+        }
+
+        if (currentViewMode !== "day" && currentTimeTicker) {
+          window.clearInterval(currentTimeTicker);
+          currentTimeTicker = null;
+        }
+
+        if (currentViewMode === "week") {
+          renderWeekView();
+        } else if (currentViewMode === "day") {
+          renderDayView();
+        } else {
+          renderMonthView(currentYear, currentMonth);
+        }
 
         renderUpcomingTasks();
         syncSeasonFromMonth();
+      }
+
+      function layoutTimelineEvents(events) {
+        const sorted = events
+          .slice()
+          .sort(function (a, b) {
+            if (a.startMinutes !== b.startMinutes) {
+              return a.startMinutes - b.startMinutes;
+            }
+            return a.endMinutes - b.endMinutes;
+          });
+        const assignments = new Map();
+
+        function assignCluster(cluster) {
+          if (!cluster.length) {
+            return;
+          }
+          const active = [];
+          let maxCols = 0;
+          cluster.forEach(function (eventItem) {
+            for (let i = active.length - 1; i >= 0; i -= 1) {
+              if (active[i].endMinutes <= eventItem.startMinutes) {
+                active.splice(i, 1);
+              }
+            }
+            const used = new Set(active.map(function (item) { return item.col; }));
+            let col = 0;
+            while (used.has(col)) {
+              col += 1;
+            }
+            active.push({ endMinutes: eventItem.endMinutes, col: col });
+            maxCols = Math.max(maxCols, col + 1);
+            assignments.set(eventItem, { col: col, cols: 1 });
+          });
+          cluster.forEach(function (eventItem) {
+            const item = assignments.get(eventItem);
+            item.cols = maxCols;
+            assignments.set(eventItem, item);
+          });
+        }
+
+        let cluster = [];
+        let clusterEnd = -1;
+        sorted.forEach(function (eventItem) {
+          if (!cluster.length) {
+            cluster.push(eventItem);
+            clusterEnd = eventItem.endMinutes;
+            return;
+          }
+          if (eventItem.startMinutes < clusterEnd) {
+            cluster.push(eventItem);
+            clusterEnd = Math.max(clusterEnd, eventItem.endMinutes);
+            return;
+          }
+          assignCluster(cluster);
+          cluster = [eventItem];
+          clusterEnd = eventItem.endMinutes;
+        });
+        assignCluster(cluster);
+        return assignments;
       }
 
       function closeEventModal() {
@@ -1481,6 +2221,9 @@
         infoStartInput.value = eventData.startText || "";
         infoEndInput.value = eventData.endText || "";
         infoDescriptionInput.value = eventData.description || "No description provided";
+        infoVisibilityInput.value = eventData.visibleToStudentVolunteer
+          ? "Visible to student and volunteer accounts"
+          : "Visible to admin accounts only";
         currentInfoEventRef = eventData.deletable
           ? { dateKey: eventData.dateKey, eventId: eventData.eventId }
           : null;
@@ -1495,6 +2238,7 @@
           date.toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" });
         eventNameInput.value = "";
         eventDescriptionInput.value = "";
+        eventVisibleToUsersInput.checked = true;
         eventModalBackdrop.classList.add("open");
       }
 
@@ -1545,30 +2289,40 @@
 
         while (events.length < 40 && cursor <= limitDate) {
           const dateKey = formatLocalDate(cursor);
-          if (cursor.getDay() === 6 && !deletedClassDates.has(dateKey)) {
-            const classDateValue = formatLocalDate(cursor);
+          const classEvents = getEventsForDate(cursor).filter(function (item) { return item.type === "class"; });
+          classEvents.forEach(function (classEvent) {
             events.push({
+              type: "class",
               date: new Date(cursor),
-              dateValue: classDateValue,
-              label: "Class",
-              startMinutes: 0,
-              startText: "9:00 AM",
-              endText: "10:00 AM",
-              description: "Weekly class session.",
+              dateValue: classEvent.dateValue,
+              label: classEvent.label,
+              startMinutes: classEvent.startMinutes,
+              startText: classEvent.startText,
+              endText: classEvent.endText,
+              description: classEvent.description,
               deletable: false,
             });
-          }
+          });
 
           const extraEvents = userEventsByDate.get(dateKey) || [];
           extraEvents.forEach(function (eventItem) {
             events.push({
+              type: "user",
               date: new Date(cursor),
               dateValue: dateKey,
               label: eventItem.name,
               startMinutes: eventItem.startMinutes,
               startText: eventItem.startText || "",
               endText: eventItem.endText || "",
+              endMinutes:
+                typeof eventItem.endMinutes === "number"
+                  ? eventItem.endMinutes
+                  : (parseDisplayTimeToMinutes(eventItem.endText) ?? 0),
               description: eventItem.description || "",
+              visibleToStudentVolunteer:
+                typeof eventItem.visibleToStudentVolunteer === "boolean"
+                  ? eventItem.visibleToStudentVolunteer
+                  : true,
               eventId: eventItem.id,
               deletable: true,
             });
@@ -1592,6 +2346,9 @@
           const item = document.createElement("li");
           item.textContent =
             eventItem.label +
+            (eventItem.startText && eventItem.endText
+              ? " (" + eventItem.startText + " - " + eventItem.endText + ")"
+              : "") +
             " - " +
             eventItem.date.toLocaleDateString(undefined, {
               weekday: "short",
@@ -1599,7 +2356,7 @@
               day: "numeric",
             });
           item.addEventListener("click", function () {
-            if (eventItem.label === "Class" && eventItem.dateValue) {
+            if (eventItem.type === "class" && eventItem.dateValue) {
               window.location.href = buildClassDetailsUrl(eventItem.dateValue);
               return;
             }
@@ -1608,7 +2365,15 @@
               readableDate: formatReadableDate(eventItem.date),
               startText: eventItem.startText || "",
               endText: eventItem.endText || "",
+              endMinutes:
+                typeof eventItem.endMinutes === "number"
+                  ? eventItem.endMinutes
+                  : (parseDisplayTimeToMinutes(eventItem.endText) ?? 0),
               description: eventItem.description || "",
+              visibleToStudentVolunteer:
+                typeof eventItem.visibleToStudentVolunteer === "boolean"
+                  ? eventItem.visibleToStudentVolunteer
+                  : true,
               deletable: eventItem.deletable,
               dateKey: eventItem.dateValue,
               eventId: eventItem.eventId,
@@ -1619,6 +2384,27 @@
       }
 
       prevMonthButton.addEventListener("click", function () {
+        if (currentViewMode === "week") {
+          const prevWeek = new Date(currentFocusDate);
+          prevWeek.setDate(prevWeek.getDate() - 7);
+          if (isDateOutsideBounds(prevWeek)) {
+            return;
+          }
+          setFocusDate(prevWeek);
+          renderCalendar();
+          return;
+        }
+        if (currentViewMode === "day") {
+          const prevDay = new Date(currentFocusDate);
+          prevDay.setDate(prevDay.getDate() - 1);
+          if (isDateOutsideBounds(prevDay)) {
+            return;
+          }
+          setFocusDate(prevDay);
+          renderCalendar();
+          return;
+        }
+
         let nextMonth = currentMonth - 1;
         let nextYear = currentYear;
         if (nextMonth < 0) {
@@ -1630,10 +2416,32 @@
         }
         currentMonth = nextMonth;
         currentYear = nextYear;
+        setFocusDate(new Date(currentYear, currentMonth, 1));
         renderCalendar(currentYear, currentMonth);
       });
 
       nextMonthButton.addEventListener("click", function () {
+        if (currentViewMode === "week") {
+          const nextWeek = new Date(currentFocusDate);
+          nextWeek.setDate(nextWeek.getDate() + 7);
+          if (isDateOutsideBounds(nextWeek)) {
+            return;
+          }
+          setFocusDate(nextWeek);
+          renderCalendar();
+          return;
+        }
+        if (currentViewMode === "day") {
+          const nextDay = new Date(currentFocusDate);
+          nextDay.setDate(nextDay.getDate() + 1);
+          if (isDateOutsideBounds(nextDay)) {
+            return;
+          }
+          setFocusDate(nextDay);
+          renderCalendar();
+          return;
+        }
+
         let nextMonth = currentMonth + 1;
         let nextYear = currentYear;
         if (nextMonth > 11) {
@@ -1645,6 +2453,7 @@
         }
         currentMonth = nextMonth;
         currentYear = nextYear;
+        setFocusDate(new Date(currentYear, currentMonth, 1));
         renderCalendar(currentYear, currentMonth);
       });
 
@@ -1658,6 +2467,7 @@
         }
         currentYear = year;
         currentMonth = getStartMonthForSeason(season);
+        setFocusDate(new Date(currentYear, currentMonth, 1));
         renderCalendar(currentYear, currentMonth);
       });
 
@@ -1667,9 +2477,20 @@
         if (isBeforeMinBound(targetYear, targetMonth) || isAfterMaxBound(targetYear, targetMonth)) {
           return;
         }
-        currentYear = targetYear;
-        currentMonth = targetMonth;
-        renderCalendar(currentYear, currentMonth);
+        setFocusDate(new Date(targetYear, targetMonth, now.getDate()));
+        renderCalendar();
+      });
+
+      calendarViewSelect.addEventListener("change", function () {
+        currentViewMode = calendarViewSelect.value;
+        if (currentViewMode === "week" || currentViewMode === "day") {
+          const liveNow = new Date();
+          const todayFocus = new Date(liveNow.getFullYear(), liveNow.getMonth(), liveNow.getDate());
+          if (!isDateOutsideBounds(todayFocus)) {
+            setFocusDate(todayFocus);
+          }
+        }
+        renderCalendar();
       });
 
       sidebarButtons.forEach(function (button) {
@@ -1693,6 +2514,11 @@
       deleteConfirmBackdrop.addEventListener("click", function (event) {
         if (event.target === deleteConfirmBackdrop) {
           closeDeleteConfirmModal();
+        }
+      });
+      reAddConfirmBackdrop.addEventListener("click", function (event) {
+        if (event.target === reAddConfirmBackdrop) {
+          closeReAddConfirmModal();
         }
       });
 
@@ -1724,6 +2550,11 @@
           startMinuteSelect.value,
           startMeridiemSelect.value
         );
+        const endMinutes = to12HourMinutes(
+          endHourSelect.value,
+          endMinuteSelect.value,
+          endMeridiemSelect.value
+        );
 
         const existing = userEventsByDate.get(selectedEventDate) || [];
         existing.push({
@@ -1733,6 +2564,8 @@
           startText: startText,
           endText: endText,
           startMinutes: startMinutes,
+          endMinutes: Math.max(startMinutes + 15, endMinutes),
+          visibleToStudentVolunteer: eventVisibleToUsersInput.checked,
         });
         existing.sort(function (a, b) {
           return a.startMinutes - b.startMinutes;
@@ -1753,6 +2586,16 @@
       });
 
       cancelDeleteEventButton.addEventListener("click", closeDeleteConfirmModal);
+      cancelReAddClassButton.addEventListener("click", closeReAddConfirmModal);
+      confirmReAddClassButton.addEventListener("click", function () {
+        if (!pendingReAddDate) {
+          closeReAddConfirmModal();
+          return;
+        }
+        removeDeletedClassDate(pendingReAddDate);
+        closeReAddConfirmModal();
+        renderCalendar();
+      });
       confirmDeleteEventButton.addEventListener("click", function () {
         if (!currentInfoEventRef) {
           closeDeleteConfirmModal();
@@ -1798,6 +2641,7 @@
       loadUserEvents();
       loadDeletedClasses();
       buildSeasonOptions();
+      calendarViewSelect.value = currentViewMode;
       if (
         Number.isInteger(requestedYear) &&
         Number.isInteger(requestedMonth) &&
@@ -1806,11 +2650,10 @@
         !isBeforeMinBound(requestedYear, requestedMonth) &&
         !isAfterMaxBound(requestedYear, requestedMonth)
       ) {
-        currentYear = requestedYear;
-        currentMonth = requestedMonth;
+        setFocusDate(new Date(requestedYear, requestedMonth, 1));
       }
       populateTimeSelects();
-      renderCalendar(currentYear, currentMonth);
+      renderCalendar();
       if (initialView === "volunteers" || initialView === "students" || initialView === "forms") {
         setActiveView(initialView);
       } else {
