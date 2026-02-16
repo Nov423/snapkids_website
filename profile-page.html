@@ -40,6 +40,11 @@
         transform: translateY(-20px);
       }
 
+      .logo-home-link {
+        display: inline-flex;
+        align-items: center;
+      }
+
       .back-link {
         border: 0;
         border-radius: 10px;
@@ -94,6 +99,13 @@
         gap: 0.5rem;
       }
 
+      .resource-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 0.55rem;
+        align-items: center;
+      }
+
       .resource-link {
         display: block;
         border-radius: 9px;
@@ -102,6 +114,20 @@
         font-weight: 700;
         color: #06273f;
         background: #dff8ff;
+      }
+
+      .upload-pdf-btn {
+        border: 0;
+        border-radius: 9px;
+        padding: 0.52rem 0.7rem;
+        font-weight: 700;
+        color: #06273f;
+        background: #bfeefc;
+        cursor: pointer;
+      }
+
+      .hidden-file-input {
+        display: none;
       }
 
       .analytics-grid {
@@ -134,11 +160,15 @@
       }
 
       .reset-password-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         border: 0;
         border-radius: 10px;
         padding: 0.6rem 0.85rem;
         font-size: 0.95rem;
         font-weight: 700;
+        text-decoration: none;
         color: #06273f;
         background: #dff8ff;
         cursor: pointer;
@@ -157,7 +187,9 @@
   </head>
   <body>
     <header class="top-bar">
-      <img class="top-logo" src="snapkids_logo.png" alt="SNAPkids logo" />
+      <a class="logo-home-link" href="success.html?tab=calendar" aria-label="Go to calendar">
+        <img class="top-logo" src="snapkids_logo.png" alt="SNAPkids logo" />
+      </a>
       <a class="back-link" href="success.html">Back</a>
     </header>
     <main class="page">
@@ -167,16 +199,78 @@
 
           <h2 class="section-title">Certifications</h2>
           <ul class="link-list">
-            <li><a class="resource-link" href="#" aria-disabled="true">CPR Certification.pdf</a></li>
-            <li><a class="resource-link" href="#" aria-disabled="true">Lifeguard Certification.pdf</a></li>
-            <li><a class="resource-link" href="#" aria-disabled="true">Background Check Clearance.pdf</a></li>
+            <li class="resource-row">
+              <a class="resource-link" data-resource-id="cpr-cert" href="#" download="CPR Certification.pdf"
+                >CPR Certification.pdf</a
+              >
+              <button class="upload-pdf-btn" type="button" data-upload-for="cpr-cert">Upload PDF</button>
+              <input class="hidden-file-input" type="file" accept="application/pdf" data-file-input="cpr-cert" />
+            </li>
+            <li class="resource-row">
+              <a
+                class="resource-link"
+                data-resource-id="lifeguard-cert"
+                href="#"
+                download="Lifeguard Certification.pdf"
+                >Lifeguard Certification.pdf</a
+              >
+              <button class="upload-pdf-btn" type="button" data-upload-for="lifeguard-cert">Upload PDF</button>
+              <input class="hidden-file-input" type="file" accept="application/pdf" data-file-input="lifeguard-cert" />
+            </li>
+            <li class="resource-row">
+              <a
+                class="resource-link"
+                data-resource-id="background-check"
+                href="#"
+                download="Background Check Clearance.pdf"
+                >Background Check Clearance.pdf</a
+              >
+              <button class="upload-pdf-btn" type="button" data-upload-for="background-check">Upload PDF</button>
+              <input class="hidden-file-input" type="file" accept="application/pdf" data-file-input="background-check" />
+            </li>
           </ul>
 
           <h2 class="section-title" style="margin-top: 1rem">Documents</h2>
           <ul class="link-list">
-            <li><a class="resource-link" href="#" aria-disabled="true">Volunteer Agreement.pdf</a></li>
-            <li><a class="resource-link" href="#" aria-disabled="true">Liability Waiver.pdf</a></li>
-            <li><a class="resource-link" href="#" aria-disabled="true">Signed Attendance Forms.zip</a></li>
+            <li class="resource-row">
+              <a
+                class="resource-link"
+                data-resource-id="volunteer-agreement"
+                href="#"
+                download="Volunteer Agreement.pdf"
+                >Volunteer Agreement.pdf</a
+              >
+              <button class="upload-pdf-btn" type="button" data-upload-for="volunteer-agreement">Upload PDF</button>
+              <input
+                class="hidden-file-input"
+                type="file"
+                accept="application/pdf"
+                data-file-input="volunteer-agreement"
+              />
+            </li>
+            <li class="resource-row">
+              <a class="resource-link" data-resource-id="liability-waiver" href="#" download="Liability Waiver.pdf"
+                >Liability Waiver.pdf</a
+              >
+              <button class="upload-pdf-btn" type="button" data-upload-for="liability-waiver">Upload PDF</button>
+              <input
+                class="hidden-file-input"
+                type="file"
+                accept="application/pdf"
+                data-file-input="liability-waiver"
+              />
+            </li>
+            <li class="resource-row">
+              <a
+                class="resource-link"
+                data-resource-id="attendance-forms"
+                href="#"
+                download="Signed Attendance Forms.pdf"
+                >Signed Attendance Forms.pdf</a
+              >
+              <button class="upload-pdf-btn" type="button" data-upload-for="attendance-forms">Upload PDF</button>
+              <input class="hidden-file-input" type="file" accept="application/pdf" data-file-input="attendance-forms" />
+            </li>
           </ul>
         </article>
 
@@ -213,11 +307,96 @@
           <article class="card">
             <h1>Account Actions</h1>
             <div class="actions">
-              <button class="reset-password-btn" type="button">Reset Password</button>
+              <a class="reset-password-btn" href="reset-password.html">Reset Password</a>
             </div>
           </article>
         </div>
       </section>
     </main>
+    <script>
+      const profileResourceStorageKey = "snapkids_profile_resources_v1";
+      const defaultPdfDataUrl =
+        "data:application/pdf;base64,JVBERi0xLjEKMSAwIG9iago8PCAvVHlwZSAvQ2F0YWxvZyAvUGFnZXMgMiAwIFIgPj4KZW5kb2JqCjIgMCBvYmoKPDwgL1R5cGUgL1BhZ2VzIC9LaWRzIFszIDAgUl0gL0NvdW50IDEgPj4KZW5kb2JqCjMgMCBvYmoKPDwgL1R5cGUgL1BhZ2UgL1BhcmVudCAyIDAgUiAvTWVkaWFCb3ggWzAgMCA2MTIgNzkyXSA+PgplbmRvYmoKeHJlZgowIDQKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDEwIDAwMDAwIG4gCjAwMDAwMDAwNjAgMDAwMDAgbiAKMDAwMDAwMDExNyAwMDAwMCBuIAp0cmFpbGVyCjw8IC9Sb290IDEgMCBSIC9TaXplIDQgPj4Kc3RhcnR4cmVmCjE4MgolJUVPRg==";
+      const resourceLinks = Array.from(document.querySelectorAll("[data-resource-id]"));
+      const uploadButtons = Array.from(document.querySelectorAll("[data-upload-for]"));
+      const fileInputs = Array.from(document.querySelectorAll("[data-file-input]"));
+      let storedResources = {};
+
+      function loadStoredResources() {
+        try {
+          const raw = localStorage.getItem(profileResourceStorageKey);
+          storedResources = raw ? JSON.parse(raw) : {};
+        } catch (error) {
+          storedResources = {};
+        }
+      }
+
+      function persistStoredResources() {
+        try {
+          localStorage.setItem(profileResourceStorageKey, JSON.stringify(storedResources));
+        } catch (error) {
+          // Ignore storage failures in private/incognito contexts.
+        }
+      }
+
+      function applyResourceLink(link) {
+        const id = link.getAttribute("data-resource-id");
+        const defaultFileName = link.getAttribute("download") || (link.textContent || "document.pdf").trim();
+        const saved = storedResources[id];
+        const href = saved && saved.dataUrl ? saved.dataUrl : defaultPdfDataUrl;
+        const filename = saved && saved.filename ? saved.filename : defaultFileName;
+        link.href = href;
+        link.setAttribute("download", filename);
+        link.textContent = filename;
+      }
+
+      loadStoredResources();
+      resourceLinks.forEach(applyResourceLink);
+
+      uploadButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+          const id = button.getAttribute("data-upload-for");
+          const fileInput = document.querySelector('[data-file-input="' + id + '"]');
+          if (fileInput) {
+            fileInput.click();
+          }
+        });
+      });
+
+      fileInputs.forEach(function (input) {
+        input.addEventListener("change", function () {
+          const file = input.files && input.files[0];
+          if (!file) {
+            return;
+          }
+          const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+          if (!isPdf) {
+            alert("Please upload a PDF file.");
+            input.value = "";
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = function () {
+            const dataUrl = typeof reader.result === "string" ? reader.result : "";
+            if (!dataUrl) {
+              input.value = "";
+              return;
+            }
+            const id = input.getAttribute("data-file-input");
+            storedResources[id] = {
+              filename: file.name,
+              dataUrl: dataUrl,
+            };
+            persistStoredResources();
+            const link = document.querySelector('[data-resource-id="' + id + '"]');
+            if (link) {
+              applyResourceLink(link);
+            }
+            input.value = "";
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+    </script>
   </body>
 </html>

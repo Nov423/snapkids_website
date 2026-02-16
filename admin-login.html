@@ -209,6 +209,45 @@
       const passwordInput = document.getElementById("password");
       const errorMessage = document.getElementById("login-error");
       const togglePasswordButton = document.getElementById("toggle-password");
+      const adminPasswordStorageKey = "snapkids_admin_password_v1";
+
+      function normalizeCredential(value) {
+        return String(value || "").trim();
+      }
+
+      function getPasswordFromCookie() {
+        const cookieName = adminPasswordStorageKey + "=";
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i += 1) {
+          const cookie = cookies[i].trim();
+          if (cookie.indexOf(cookieName) === 0) {
+            return decodeURIComponent(cookie.slice(cookieName.length));
+          }
+        }
+        return "";
+      }
+
+      function getStoredAdminPassword() {
+        try {
+          const saved = localStorage.getItem(adminPasswordStorageKey);
+          const normalizedSaved = normalizeCredential(saved);
+          if (normalizedSaved.length) {
+            return normalizedSaved;
+          }
+        } catch (error) {
+          // Fall back to cookie if localStorage is blocked.
+        }
+        const cookieSaved = normalizeCredential(getPasswordFromCookie());
+        if (cookieSaved.length) {
+          try {
+            localStorage.setItem(adminPasswordStorageKey, cookieSaved);
+          } catch (error) {
+            // Ignore if unavailable.
+          }
+          return cookieSaved;
+        }
+        return "123456";
+      }
 
       function clearErrorState() {
         usernameInput.classList.remove("input-error");
@@ -228,10 +267,11 @@
       form.addEventListener("submit", function (event) {
         event.preventDefault();
 
-        const username = usernameInput.value;
-        const password = passwordInput.value;
+        const username = normalizeCredential(usernameInput.value).toLowerCase();
+        const password = normalizeCredential(passwordInput.value);
+        const currentAdminPassword = getStoredAdminPassword();
 
-        if (username === "admin" && password === "123456") {
+        if (username === "admin" && password === currentAdminPassword) {
           sessionStorage.setItem("snapkids_admin_authenticated", "true");
           window.location.href = "success.html";
         } else {
