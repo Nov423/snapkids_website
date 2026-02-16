@@ -6,8 +6,10 @@
     <title>Student Profile</title>
     <script>
       (function () {
-        if (sessionStorage.getItem("snapkids_admin_authenticated") !== "true") {
-          window.location.replace("admin-login.html");
+        const adminAuthed = sessionStorage.getItem("snapkids_admin_authenticated") === "true";
+        const studentAuthed = sessionStorage.getItem("snapkids_student_authenticated") === "true";
+        if (!adminAuthed && !studentAuthed) {
+          window.location.replace("student-login.html");
         }
       })();
     </script>
@@ -135,7 +137,9 @@
     <script>
       const backLink = document.getElementById("back-link");
       const params = new URLSearchParams(window.location.search);
-      const name = params.get("name") || "Unknown Student";
+      const adminAuthed = sessionStorage.getItem("snapkids_admin_authenticated") === "true";
+      const studentName = sessionStorage.getItem("snapkids_student_name");
+      const name = params.get("name") || studentName || "Unknown Student";
       const sourceTab = params.get("sourceTab");
       const returnYear = Number(params.get("year"));
       const returnMonth = Number(params.get("month"));
@@ -240,7 +244,7 @@
         strokeComfortListEl.appendChild(item);
       });
 
-      let fallbackHref = "success.html";
+      let fallbackHref = adminAuthed ? "success.html" : "student-home.html";
       if (sourceTab === "volunteers" || sourceTab === "students" || sourceTab === "forms") {
         fallbackHref = "success.html?tab=" + encodeURIComponent(sourceTab);
         if (
