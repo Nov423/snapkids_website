@@ -87,6 +87,8 @@
     <main class="page">
       <section class="card">
         <h1 id="volunteer-name">Volunteer Profile</h1>
+        <p class="line" id="volunteer-email"><strong>Email:</strong> --</p>
+        <p class="line" id="volunteer-phone"><strong>Phone:</strong> --</p>
         <p class="line" id="volunteer-hours">Total volunteer hours: --</p>
         <p class="line" id="volunteer-type"><strong>Status:</strong> --</p>
         <p class="line" id="volunteer-experience"><strong>Experience:</strong> --</p>
@@ -102,6 +104,8 @@
       const returnYear = Number(params.get("year"));
       const returnMonth = Number(params.get("month"));
       document.getElementById("volunteer-name").textContent = name;
+      const volunteerEmailEl = document.getElementById("volunteer-email");
+      const volunteerPhoneEl = document.getElementById("volunteer-phone");
       document.getElementById("volunteer-hours").textContent = "Total volunteer hours: " + hours;
       const volunteerTypeEl = document.getElementById("volunteer-type");
       const volunteerExperienceEl = document.getElementById("volunteer-experience");
@@ -149,7 +153,29 @@
         };
       }
 
+      function buildContactInfo(fullName) {
+        const parts = fullName.trim().toLowerCase().split(/\s+/);
+        const first = (parts[0] || "volunteer").replace(/[^a-z]/g, "");
+        const last = (parts.slice(1).join("") || "snapkids").replace(/[^a-z]/g, "");
+        const hash = hashName(fullName);
+        const email = first + "." + last + "@snapkids.org";
+        const area = 200 + (hash % 800);
+        const prefix = 200 + (Math.floor(hash / 7) % 800);
+        const line = String(1000 + (Math.floor(hash / 13) % 9000));
+        const phone =
+          "(" +
+          String(area).padStart(3, "0") +
+          ") " +
+          String(prefix).padStart(3, "0") +
+          "-" +
+          line;
+        return { email: email, phone: phone };
+      }
+
       const volunteerStats = buildVolunteerStats(name);
+      const contact = buildContactInfo(name);
+      volunteerEmailEl.innerHTML = "<strong>Email:</strong> " + contact.email;
+      volunteerPhoneEl.innerHTML = "<strong>Phone:</strong> " + contact.phone;
       volunteerTypeEl.innerHTML = "<strong>Status:</strong> " + volunteerStats.status;
       volunteerExperienceEl.innerHTML = "<strong>Experience:</strong> " + volunteerStats.experienceText;
       volunteerStrikesEl.innerHTML = "<strong>Strikes:</strong> " + volunteerStats.strikes;

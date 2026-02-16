@@ -888,7 +888,9 @@
       let selectedEventDate = null;
       let currentInfoEventRef = null;
       const userEventsStorageKey = "snapkids_user_events_v1";
+      const deletedClassesStorageKey = "snapkids_deleted_classes_v1";
       const userEventsByDate = new Map();
+      const deletedClassDates = new Set();
       const volunteerFormRequests = [
         { name: "Avery Johnson", hours: 18.25 },
         { name: "Maya Patel", hours: 26.5 },
@@ -1237,6 +1239,27 @@
         }
       }
 
+      function loadDeletedClasses() {
+        deletedClassDates.clear();
+        try {
+          const raw = localStorage.getItem(deletedClassesStorageKey);
+          if (!raw) {
+            return;
+          }
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed)) {
+            return;
+          }
+          parsed.forEach(function (dateKey) {
+            if (typeof dateKey === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dateKey)) {
+              deletedClassDates.add(dateKey);
+            }
+          });
+        } catch (error) {
+          // Ignore malformed saved data.
+        }
+      }
+
       function saveUserEvents() {
         const payload = {};
         userEventsByDate.forEach(function (events, dateKey) {
@@ -1398,7 +1421,7 @@
             openEventModal(date);
           });
 
-          if (date.getDay() === 6) {
+          if (date.getDay() === 6 && !deletedClassDates.has(dateValue)) {
             const classTag = document.createElement("button");
             classTag.type = "button";
             classTag.className = "class-tag";
@@ -1522,7 +1545,7 @@
 
         while (events.length < 40 && cursor <= limitDate) {
           const dateKey = formatLocalDate(cursor);
-          if (cursor.getDay() === 6) {
+          if (cursor.getDay() === 6 && !deletedClassDates.has(dateKey)) {
             const classDateValue = formatLocalDate(cursor);
             events.push({
               date: new Date(cursor),
@@ -1773,6 +1796,7 @@
       });
 
       loadUserEvents();
+      loadDeletedClasses();
       buildSeasonOptions();
       if (
         Number.isInteger(requestedYear) &&

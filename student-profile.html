@@ -112,6 +112,8 @@
     <main class="page">
       <section class="card">
         <h1 id="student-name">Student Profile</h1>
+        <p class="line" id="student-email"><strong>Email:</strong> --</p>
+        <p class="line" id="student-phone"><strong>Phone:</strong> --</p>
         <p class="line" id="student-years"><strong>Years with SNAPkids:</strong> --</p>
         <p class="line" id="student-classes"><strong>Classes attended:</strong> --</p>
         <p class="line" id="student-worked-on"><strong>Worked on:</strong> --</p>
@@ -131,6 +133,8 @@
       const returnYear = Number(params.get("year"));
       const returnMonth = Number(params.get("month"));
       document.getElementById("student-name").textContent = name;
+      const emailEl = document.getElementById("student-email");
+      const phoneEl = document.getElementById("student-phone");
       const yearsEl = document.getElementById("student-years");
       const classesEl = document.getElementById("student-classes");
       const workedOnEl = document.getElementById("student-worked-on");
@@ -193,8 +197,30 @@
         };
       }
 
+      function buildContactInfo(fullName) {
+        const parts = fullName.trim().toLowerCase().split(/\s+/);
+        const first = (parts[0] || "student").replace(/[^a-z]/g, "");
+        const last = (parts.slice(1).join("") || "snapkids").replace(/[^a-z]/g, "");
+        const hash = hashName(fullName);
+        const email = first + "." + last + "@snapkids.org";
+        const area = 200 + (hash % 800);
+        const prefix = 200 + (Math.floor(hash / 7) % 800);
+        const line = String(1000 + (Math.floor(hash / 13) % 9000));
+        const phone =
+          "(" +
+          String(area).padStart(3, "0") +
+          ") " +
+          String(prefix).padStart(3, "0") +
+          "-" +
+          line;
+        return { email: email, phone: phone };
+      }
+
       const summary = summarizeStudentFeedback(name);
       const stats = buildStudentStats(name);
+      const contact = buildContactInfo(name);
+      emailEl.innerHTML = "<strong>Email:</strong> " + contact.email;
+      phoneEl.innerHTML = "<strong>Phone:</strong> " + contact.phone;
       yearsEl.innerHTML = "<strong>Years with SNAPkids:</strong> " + stats.yearsWithProgram;
       classesEl.innerHTML = "<strong>Classes attended:</strong> " + stats.classesAttended;
       workedOnEl.innerHTML = "<strong>Worked on:</strong> " + summary.workedOn;
